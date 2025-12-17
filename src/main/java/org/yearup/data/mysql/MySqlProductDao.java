@@ -24,24 +24,27 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
         List<Product> products = new ArrayList<>();
 
         String sql = "SELECT * FROM products " +
-                "WHERE (category_id = ? OR ? = -1) " +
-                "   AND (price <= ? OR ? = -1) " +
-                "   AND (subcategory = ? OR ? = '') ";
+            "WHERE (category_id = ? OR ? = -1) " +
+            "   AND (price >= ? OR ? = -1) " +
+            "   AND (price <= ? OR ? = -1) " +
+            "   AND (LOWER(subcategory) = LOWER(?) OR ? = '') ";
 
         categoryId = categoryId == null ? -1 : categoryId;
-        minPrice = minPrice == null ? new BigDecimal("-1") : minPrice;
-        maxPrice = maxPrice == null ? new BigDecimal("-1") : maxPrice;
-        subCategory = subCategory == null ? "" : subCategory;
+        BigDecimal min = (minPrice == null ? new BigDecimal("-1") : minPrice);
+        BigDecimal max = (maxPrice == null ? new BigDecimal("-1") : maxPrice);
+        String sub = (subCategory == null ? "" : subCategory);
 
         try (Connection connection = getConnection())
         {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, categoryId);
             statement.setInt(2, categoryId);
-            statement.setBigDecimal(3, minPrice);
-            statement.setBigDecimal(4, minPrice);
-            statement.setString(5, subCategory);
-            statement.setString(6, subCategory);
+            statement.setBigDecimal(3, min);
+            statement.setBigDecimal(4, min);
+            statement.setBigDecimal(5, max);
+            statement.setBigDecimal(6, max);
+            statement.setString(7, sub);
+            statement.setString(8, sub);
 
             ResultSet row = statement.executeQuery();
 
