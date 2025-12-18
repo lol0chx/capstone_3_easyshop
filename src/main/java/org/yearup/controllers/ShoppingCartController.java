@@ -141,4 +141,28 @@ public class ShoppingCartController
         }
     }
 
+    // delete a single product from the current user's cart
+    @DeleteMapping("/products/{productId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeProduct(Principal principal, @PathVariable int productId)
+    {
+        try
+        {
+            String userName = principal.getName();
+            User user = userDao.getByUserName(userName);
+            if (user == null)
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+
+            shoppingCartDao.removeProduct(user.getId(), productId);
+        }
+        catch(ResponseStatusException ex)
+        {
+            throw ex;
+        }
+        catch(Exception e)
+        {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
+    }
+
 }
