@@ -71,6 +71,9 @@ class MySqlProductDaoTest extends BaseDaoTestClass
         assertTrue(results.stream().allMatch(p -> p.getPrice().compareTo(new BigDecimal("80")) >= 0));
     }
 
+
+
+
     @Test
     public void search_byMinAndMax_shouldApplyBothBounds()
     {

@@ -7,6 +7,8 @@ class ShoppingCartService {
         total:0
     };
 
+    photos = [];
+
     addToCart(productId)
     {
         const url = `${config.baseUrl}/cart/products/${productId}`;
@@ -74,7 +76,7 @@ class ShoppingCartService {
         main.innerHTML = "";
 
         let div = document.createElement("div");
-        div.classList="filter-box";
+        div.classList.add("filter-box");
         main.appendChild(div);
 
         const contentDiv = document.createElement("div")
@@ -118,7 +120,13 @@ class ShoppingCartService {
         let photoDiv = document.createElement("div");
         photoDiv.classList.add("photo")
         let img = document.createElement("img");
-        img.src = `/images/products/${item.product.imageUrl}`
+        const photoName = (item.product.imageUrl && item.product.imageUrl.trim().length > 0)
+            ? item.product.imageUrl
+            : "no-image.jpg";
+        // use relative path for consistency with templates
+        img.src = `images/products/${photoName}`
+        img.alt = item.product.name || "Product image";
+        img.onerror = () => { img.src = "images/products/no-image.jpg"; };
         img.addEventListener("click", () => {
             showImageDetailForm(item.product.name, img.src)
         })
@@ -134,7 +142,31 @@ class ShoppingCartService {
         outerDiv.appendChild(descriptionDiv);
 
         let quantityDiv = document.createElement("div")
-        quantityDiv.innerText = `Quantity: ${item.quantity}`;
+        quantityDiv.classList.add("quantity-controls");
+
+        const minusBtn = document.createElement("button");
+        minusBtn.classList.add("btn","btn-secondary","btn-sm");
+        minusBtn.innerText = "-";
+        minusBtn.addEventListener("click", () => this.decrementItem(item.product.productId, item.quantity));
+        quantityDiv.appendChild(minusBtn);
+
+        const qtySpan = document.createElement("span");
+        qtySpan.classList.add("mx-2");
+        qtySpan.innerText = `Quantity: ${item.quantity}`;
+        quantityDiv.appendChild(qtySpan);
+
+        const plusBtn = document.createElement("button");
+        plusBtn.classList.add("btn","btn-secondary","btn-sm");
+        plusBtn.innerText = "+";
+        plusBtn.addEventListener("click", () => this.incrementItem(item.product.productId));
+        quantityDiv.appendChild(plusBtn);
+
+        const removeBtn = document.createElement("button");
+        removeBtn.classList.add("btn","btn-danger","btn-sm","ms-3");
+        removeBtn.innerText = "Remove";
+        removeBtn.addEventListener("click", () => this.removeItem(item.product.productId));
+        quantityDiv.appendChild(removeBtn);
+
         outerDiv.appendChild(quantityDiv)
 
 
@@ -148,16 +180,8 @@ class ShoppingCartService {
 
         axios.delete(url)
              .then(response => {
-                 this.cart = {
-                     items: [],
-                     total: 0
-                 }
-
-                 this.cart.total = response.data.total;
-
-                 for (const [key, value] of Object.entries(response.data.items)) {
-                     this.cart.items.push(value);
-                 }
+                 // 204 No Content expected; just reset local cart
+                 this.cart = { items: [], total: 0 };
 
                  this.updateCartDisplay()
                  this.loadCartPage()
@@ -173,10 +197,64 @@ class ShoppingCartService {
              })
     }
 
+    incrementItem(productId)
+    {
+        const url = `${config.baseUrl}/cart/products/${productId}`;
+        axios.post(url, {})
+            .then(response => {
+                this.setCart(response.data);
+                this.updateCartDisplay();
+                this.loadCartPage();
+            })
+            .catch(error => {
+                const data = { error: "Increase quantity failed." };
+                templateBuilder.append("error", data, "errors")
+            });
+    }
+
+    decrementItem(productId, currentQty)
+    {
+        if(currentQty <= 1)
+        {
+            this.removeItem(productId);
+            return;
+        }
+
+        const url = `${config.baseUrl}/cart/products/${productId}`;
+        const body = { quantity: currentQty - 1 };
+        axios.put(url, body)
+            .then(response => {
+                this.setCart(response.data);
+                this.updateCartDisplay();
+                this.loadCartPage();
+            })
+            .catch(error => {
+                const data = { error: "Decrease quantity failed." };
+                templateBuilder.append("error", data, "errors")
+            });
+    }
+
+    removeItem(productId)
+    {
+        const url = `${config.baseUrl}/cart/products/${productId}`;
+        axios.delete(url)
+            .then(() => {
+                // remove locally and refresh
+                this.cart.items = this.cart.items.filter(i => i.product.productId !== productId);
+                this.updateCartDisplay();
+                this.loadCartPage();
+            })
+            .catch(error => {
+                const data = { error: "Remove item failed." };
+                templateBuilder.append("error", data, "errors")
+            });
+    }
+
     updateCartDisplay()
     {
         try {
-            const itemCount = this.cart.items.length;
+            // Show total quantity across all items (not just unique item count)
+            const itemCount = this.cart.items.reduce((sum, item) => sum + (item.quantity || 0), 0);
             const cartControl = document.getElementById("cart-items")
 
             cartControl.innerText = itemCount;
@@ -184,6 +262,18 @@ class ShoppingCartService {
         catch (e) {
 
         }
+    }
+
+    constructor() {
+        // Load list of photos into memory (same source as ProductService)
+        axios.get("images/products/photos.json")
+            .then(response => {
+                this.photos = response.data;
+            });
+    }
+
+    hasPhoto(photo){
+        return this.photos.filter(p => p == photo).length > 0;
     }
 }
 

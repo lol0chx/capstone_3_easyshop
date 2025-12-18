@@ -90,6 +90,10 @@ public class ProductsController
     {
         try
         {
+            var existing = productDao.getById(id);
+            if(existing == null)
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
             productDao.update(id, product);
         }
         catch(Exception ex)
