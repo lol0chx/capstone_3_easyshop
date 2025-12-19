@@ -96,9 +96,6 @@ User‑facing and API testing views:
   
   ![Register in Insomnia](screenshots/register%20new%20user%20on%20insomina.png)
 
-- Update Product (Insomnia):
-  
-  ![Update Product in Insomnia](screenshots/update%20product%20on%20insomnia.png)
 
 ---
 
