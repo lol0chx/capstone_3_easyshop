@@ -121,6 +121,9 @@ class UserService {
                 axios.defaults.headers.common = {'Authorization': `Bearer ${this.currentUser.token}`}
                 productService.enableButtons();
                 cartService.loadCart();
+                
+                // Navigate to home after successful login
+                loadHome();
             })
             .catch(error => {
                 const data = {
