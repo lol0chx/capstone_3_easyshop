@@ -1,42 +1,59 @@
 
-<div class="filter-box">
-  &nbsp;
-
-</div>
+<div class="filter-box"></div>
 <div id="content" class="content-form">
-  <h1>Profile</h1>
-  <div class="form-floating mb-3">
-    <input type="text" class="form-control" id="firstName" value='{{firstName}}'>
-    <label for="firstName">First Name</label>
-  </div>
-  <div class="form-floating mb-3">
-    <input type="text" class="form-control" id="lastName" value='{{lastName}}'>
-    <label for="lastName">Last Name</label>
-  </div>
-  <div class="form-floating mb-3">
-    <input type="text" class="form-control" id="phone" value='{{phone}}'>
-    <label for="phone">Phone</label>
-  </div>
-  <div class="form-floating mb-3">
-    <input type="text" class="form-control" id="email" value='{{email}}'>
-    <label for="email">Email</label>
-  </div>
-  <div class="form-floating mb-3">
-    <input type="text" class="form-control" id="address" value='{{address}}'>
-    <label for="address">Address</label>
-  </div>
-  <div class="form-floating mb-3">
-    <input type="text" class="form-control" id="city" value='{{city}}'>
-    <label for="city">City</label>
-  </div>
-  <div class="form-floating mb-3">
-    <input type="text" class="form-control" id="state" value='{{state}}'>
-    <label for="state">State</label>
-  </div>
-  <div class="form-floating mb-3">
-    <input type="text" class="form-control" id="zip" value='{{zip}}'>
-    <label for="zip">Zip</label>
+  <div>
+    <h1><i class="fas fa-user-circle" style="margin-right: 1rem; color: var(--primary-color);"></i>My Profile</h1>
+    <p style="color: var(--text-light); font-size: var(--font-size-sm);">Update your personal information and address</p>
   </div>
 
-  <button class="btn btn-outline-danger" onclick="saveProfile()">Update</button>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg);">
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="firstName" placeholder="First Name" value='{{firstName}}'>
+      <label for="firstName"><i class="fas fa-user" style="margin-right: 0.5rem;"></i>First Name</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="lastName" placeholder="Last Name" value='{{lastName}}'>
+      <label for="lastName"><i class="fas fa-user" style="margin-right: 0.5rem;"></i>Last Name</label>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg);">
+    <div class="form-floating mb-3">
+      <input type="tel" class="form-control" id="phone" placeholder="Phone" value='{{phone}}'>
+      <label for="phone"><i class="fas fa-phone" style="margin-right: 0.5rem;"></i>Phone</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="email" class="form-control" id="email" placeholder="Email" value='{{email}}'>
+      <label for="email"><i class="fas fa-envelope" style="margin-right: 0.5rem;"></i>Email</label>
+    </div>
+  </div>
+
+  <div class="form-floating mb-3">
+    <input type="text" class="form-control" id="address" placeholder="Street Address" value='{{address}}'>
+    <label for="address"><i class="fas fa-map-marker-alt" style="margin-right: 0.5rem;"></i>Street Address</label>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-lg);">
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="city" placeholder="City" value='{{city}}'>
+      <label for="city"><i class="fas fa-city" style="margin-right: 0.5rem;"></i>City</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="state" placeholder="State" value='{{state}}'>
+      <label for="state"><i class="fas fa-flag" style="margin-right: 0.5rem;"></i>State</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="zip" placeholder="ZIP Code" value='{{zip}}'>
+      <label for="zip"><i class="fas fa-location-dot" style="margin-right: 0.5rem;"></i>ZIP</label>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: var(--spacing-lg); margin-top: var(--spacing-xl);">
+    <button class="btn btn-primary" onclick="saveProfile()" style="flex: 1;">
+      <i class="fas fa-save" style="margin-right: 0.5rem;"></i>Save Changes
+    </button>
+    <button class="btn btn-secondary" onclick="loadHome()" style="flex: 1;">
+      <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i>Back to Store
+    </button>
+  </div>
 </div>

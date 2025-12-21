@@ -1,27 +1,34 @@
-<div id="login-form" class="modal">
-  <div class="modal-dialog" role="document">
+<div id="login-form" class="modal" onclick="hideModalForm()">
+  <div class="modal-dialog" role="document" onclick="event.stopPropagation()">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" >Login</h5>
-        <button type="button" class="btn-close" onclick="hideModalForm()" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true"></span>
-        </button>
+        <div>
+          <h5 class="modal-title"><i class="fas fa-sign-in-alt" style="margin-right: 0.75rem; color: var(--primary-color);"></i>Login to EasyShop</h5>
+          <p style="font-size: var(--font-size-sm); color: var(--text-light); margin-top: 0.5rem;">Access your account and browse our products</p>
+        </div>
+        <button type="button" class="btn-close" onclick="hideModalForm()" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="form-floating mb-3">
-          <input type="text" class="form-control" id="username" placeholder="username">
-          <label for="username">Username</label>
+          <input type="text" class="form-control" id="username" placeholder="username" autocomplete="username">
+          <label for="username"><i class="fas fa-user" style="margin-right: 0.5rem;"></i>Username</label>
         </div>
         <div class="form-floating mb-3">
-          <input type="password" class="form-control" id="password" placeholder="password">
-          <label for="password">Password</label>
+          <input type="password" class="form-control" id="password" placeholder="password" autocomplete="current-password">
+          <label for="password"><i class="fas fa-lock" style="margin-right: 0.5rem;"></i>Password</label>
+        </div>
+        <div style="font-size: var(--font-size-sm); color: var(--text-light);">
+          Don't have an account? Contact us to create one.
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="hideModalForm()">Cancel</button>
-        <button type="button" class="btn btn-primary" onclick="login()">Login</button>
+        <button type="button" class="btn btn-secondary" onclick="hideModalForm()">
+          <i class="fas fa-times" style="margin-right: 0.5rem;"></i>Cancel
+        </button>
+        <button type="button" class="btn btn-primary" onclick="login()">
+          <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>Login
+        </button>
       </div>
     </div>
   </div>
-
 </div>
