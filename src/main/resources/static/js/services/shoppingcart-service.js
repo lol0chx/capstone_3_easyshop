@@ -70,106 +70,158 @@ class ShoppingCartService {
 
     loadCartPage()
     {
-        // templateBuilder.build("cart", this.cart, "main");
+        // Use callback to ensure template is rendered before accessing elements
+        templateBuilder.build('cart', {}, 'main', () => {
+            const itemListDiv = document.getElementById("cart-item-list");
+            const summaryDiv = document.getElementById("order-summary");
 
-        const main = document.getElementById("main")
-        main.innerHTML = "";
+            if (!itemListDiv || !summaryDiv) {
+                console.error("Cart elements not found in DOM");
+                return;
+            }
 
-        let div = document.createElement("div");
-        div.classList.add("filter-box");
-        main.appendChild(div);
+            if (this.cart.items.length === 0) {
+                const emptyDiv = document.createElement("div");
+                emptyDiv.classList.add("empty-cart-message");
+                emptyDiv.innerHTML = `
+                    <i class="fas fa-shopping-cart"></i>
+                    <h3>Your cart is empty</h3>
+                    <p>Start shopping to add items to your cart</p>
+                    <button class="btn btn-primary" onclick="loadHome()" style="margin-top: 1rem;">
+                        <i class="fas fa-shopping-bag" style="margin-right: 0.5rem;"></i>Continue Shopping
+                    </button>
+                `;
+                itemListDiv.appendChild(emptyDiv);
+            } else {
+                // Build cart items
+                this.cart.items.forEach(item => {
+                    this.buildItem(item, itemListDiv);
+                });
 
-        const contentDiv = document.createElement("div")
-        contentDiv.id = "content";
-        contentDiv.classList.add("content-form");
+                // Build order summary
+                const subtotal = this.cart.total;
+                const tax = subtotal * 0.1; // 10% tax
+                const total = subtotal + tax;
 
-        const cartHeader = document.createElement("div")
-        cartHeader.classList.add("cart-header")
+                summaryDiv.innerHTML = `
+                    <div class="summary-item">
+                        <span>Subtotal:</span>
+                        <span>$${subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Tax (10%):</span>
+                        <span>$${tax.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-item total">
+                        <span>Total:</span>
+                        <span>$${total.toFixed(2)}</span>
+                    </div>
+                `;
 
-        const h1 = document.createElement("h1")
-        h1.innerText = "Cart";
-        cartHeader.appendChild(h1);
+                // Checkout Button
+                const checkoutBtn = document.createElement("button");
+                checkoutBtn.classList.add("btn", "btn-success");
+                checkoutBtn.innerHTML = '<i class="fas fa-credit-card" style="margin-right: 0.5rem;"></i>Checkout';
+                checkoutBtn.addEventListener("click", () => {
+                    alert("Checkout functionality will be available soon!");
+                });
+                summaryDiv.appendChild(checkoutBtn);
 
-        const button = document.createElement("button");
-        button.classList.add("btn")
-        button.classList.add("btn-danger")
-        button.innerText = "Clear";
-        button.addEventListener("click", () => this.clearCart());
-        cartHeader.appendChild(button)
-
-        contentDiv.appendChild(cartHeader)
-        main.appendChild(contentDiv);
-
-        // let parent = document.getElementById("cart-item-list");
-        this.cart.items.forEach(item => {
-            this.buildItem(item, contentDiv)
+                // Clear Cart Button
+                const clearBtn = document.createElement("button");
+                clearBtn.classList.add("btn", "btn-secondary");
+                clearBtn.innerHTML = '<i class="fas fa-trash" style="margin-right: 0.5rem;"></i>Clear Cart';
+                clearBtn.title = "Remove all items from cart";
+                clearBtn.addEventListener("click", () => {
+                    if (confirm('Are you sure you want to clear your entire cart?')) {
+                        this.clearCart();
+                    }
+                });
+                summaryDiv.appendChild(clearBtn);
+            }
         });
     }
 
     buildItem(item, parent)
     {
+        // Outer cart item div with 4-column grid: photo | details | price | actions
         let outerDiv = document.createElement("div");
         outerDiv.classList.add("cart-item");
 
-        let div = document.createElement("div");
-        outerDiv.appendChild(div);
-        let h4 = document.createElement("h4")
-        h4.innerText = item.product.name;
-        div.appendChild(h4);
-
+        // Photo div
         let photoDiv = document.createElement("div");
-        photoDiv.classList.add("photo")
+        photoDiv.classList.add("photo");
         let img = document.createElement("img");
         const photoName = (item.product.imageUrl && item.product.imageUrl.trim().length > 0)
             ? item.product.imageUrl
             : "no-image.jpg";
-        // use relative path for consistency with templates
-        img.src = `images/products/${photoName}`
+        img.src = `images/products/${photoName}`;
         img.alt = item.product.name || "Product image";
         img.onerror = () => { img.src = "images/products/no-image.jpg"; };
         img.addEventListener("click", () => {
             showImageDetailForm(item.product.name, img.src)
-        })
-        photoDiv.appendChild(img)
-        let priceH4 = document.createElement("h4");
-        priceH4.classList.add("price");
-        priceH4.innerText = `$${item.product.price}`;
-        photoDiv.appendChild(priceH4);
+        });
+        photoDiv.appendChild(img);
         outerDiv.appendChild(photoDiv);
 
-        let descriptionDiv = document.createElement("div");
-        descriptionDiv.innerText = item.product.description;
-        outerDiv.appendChild(descriptionDiv);
+        // Details div
+        let detailsDiv = document.createElement("div");
+        detailsDiv.classList.add("cart-item-details");
 
-        let quantityDiv = document.createElement("div")
-        quantityDiv.classList.add("quantity-controls");
+        let h4 = document.createElement("h4");
+        h4.innerText = item.product.name;
+        detailsDiv.appendChild(h4);
+
+        let descriptionP = document.createElement("p");
+        descriptionP.innerText = item.product.description;
+        detailsDiv.appendChild(descriptionP);
+
+        // Quantity controls in details
+        let quantityDiv = document.createElement("div");
+        quantityDiv.classList.add("cart-item-quantity");
 
         const minusBtn = document.createElement("button");
-        minusBtn.classList.add("btn","btn-secondary","btn-sm");
-        minusBtn.innerText = "-";
+        minusBtn.innerText = "−";
+        minusBtn.title = "Decrease quantity";
         minusBtn.addEventListener("click", () => this.decrementItem(item.product.productId, item.quantity));
         quantityDiv.appendChild(minusBtn);
 
         const qtySpan = document.createElement("span");
-        qtySpan.classList.add("mx-2");
-        qtySpan.innerText = `Quantity: ${item.quantity}`;
+        qtySpan.innerText = `${item.quantity}`;
         quantityDiv.appendChild(qtySpan);
 
         const plusBtn = document.createElement("button");
-        plusBtn.classList.add("btn","btn-secondary","btn-sm");
         plusBtn.innerText = "+";
+        plusBtn.title = "Increase quantity";
         plusBtn.addEventListener("click", () => this.incrementItem(item.product.productId));
         quantityDiv.appendChild(plusBtn);
 
+        detailsDiv.appendChild(quantityDiv);
+        outerDiv.appendChild(detailsDiv);
+
+        // Price div
+        let priceDiv = document.createElement("div");
+        priceDiv.classList.add("cart-item-price");
+        priceDiv.innerText = `$${item.product.price}`;
+        outerDiv.appendChild(priceDiv);
+
+        // Actions div
+        let actionsDiv = document.createElement("div");
+        actionsDiv.classList.add("cart-item-actions");
+
+        // Remove button (small, secondary style)
         const removeBtn = document.createElement("button");
-        removeBtn.classList.add("btn","btn-danger","btn-sm","ms-3");
+        removeBtn.classList.add("cart-item-remove");
         removeBtn.innerText = "Remove";
-        removeBtn.addEventListener("click", () => this.removeItem(item.product.productId));
-        quantityDiv.appendChild(removeBtn);
+        removeBtn.title = "Remove this item from cart";
+        removeBtn.addEventListener("click", () => {
+            if (confirm(`Remove ${item.product.name} from cart?`)) {
+                this.removeItem(item.product.productId);
+            }
+        });
+        actionsDiv.appendChild(removeBtn);
 
-        outerDiv.appendChild(quantityDiv)
-
-
+        outerDiv.appendChild(actionsDiv);
         parent.appendChild(outerDiv);
     }
 
