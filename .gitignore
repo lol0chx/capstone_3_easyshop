@@ -29,3 +29,16 @@ build/
 
 ### VS Code ###
 .vscode/
+### Oracle JDK ###
+oracleJdk-25/
+
+### Database Scripts ###
+database/
+
+### System Files ###
+.DS_Store
+*.log
+*.class
+*.jar
+*.exe
+.project

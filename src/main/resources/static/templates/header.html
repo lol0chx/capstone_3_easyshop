@@ -1,27 +1,41 @@
-
 {{#loggedin}}
 <div id="links">
-    <img src="images/logo.svg" alt="easyshop logo">
-    <a href="#" onclick="loadHome()">Home</a>
-    <a href="#" onclick="editProfile()">Profile</a>
-    <a href="#" onclick="showCart()">View Cart</a>
+    <img src="images/logo.svg" alt="EasyShop logo" title="Go to home page" onclick="loadHome()" style="cursor: pointer;">
+    <a href="#" onclick="loadHome(); return false;" title="Browse all products">
+        <i class="fas fa-home" style="margin-right: 0.5rem;"></i>Home
+    </a>
+    <a href="#" onclick="editProfile(); return false;" title="Edit your profile">
+        <i class="fas fa-user-circle" style="margin-right: 0.5rem;"></i>Profile
+    </a>
+    <a href="#" onclick="showCart(); return false;" title="View your shopping cart">
+        <i class="fas fa-list" style="margin-right: 0.5rem;"></i>Cart
+    </a>
 </div>
 
 <div>
-    Welcome&nbsp;<span style="font-weight: bold">{{username}}</span>&nbsp;|&nbsp;<a href="#" onclick="userService.logout();return false;">logout</a>
-    <div class="cart" onclick="showCart()">
+    <span style="color: var(--text-dark); font-weight: 500;">Welcome, <strong>{{username}}</strong></span>
+    <span style="color: var(--text-lighter); margin: 0 0.5rem;">|</span>
+    <a href="#" onclick="userService.logout(); return false;" style="color: var(--primary-color); font-weight: 500; text-decoration: none; transition: all var(--transition-base);" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+        <i class="fas fa-sign-out-alt" style="margin-right: 0.25rem;"></i>Logout
+    </a>
+    <div class="cart" onclick="showCart()" title="View cart">
         <i class="fa-solid fa-cart-shopping"></i>
         <div id="cart-items">0</div>
     </div>
 </div>
 {{/loggedin}}
+
 {{#loggedout}}
 <div id="links">
-    <img src="images/logo.svg" alt="easyshop logo">
-    <a href="#" onclick="loadHome()">Home</a>
+    <img src="images/logo.svg" alt="EasyShop logo" title="Go to home page" onclick="loadHome()" style="cursor: pointer;">
+    <a href="#" onclick="loadHome(); return false;" title="Browse all products">
+        <i class="fas fa-home" style="margin-right: 0.5rem;"></i>Home
+    </a>
 </div>
 
 <div>
-    <a href="#"  onclick="showLoginForm();return false;">login</a>
+    <a href="#" onclick="showLoginForm(); return false;" style="color: var(--primary-color); font-weight: 600; text-decoration: none; padding: 0.5rem 1rem; border: 2px solid var(--primary-color); border-radius: var(--radius-md); transition: all var(--transition-base);" onmouseover="this.style.backgroundColor='var(--primary-color)'; this.style.color='white'" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--primary-color)'">
+        <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>Login / Register
+    </a>
 </div>
 {{/loggedout}}

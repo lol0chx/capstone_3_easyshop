@@ -1,18 +1,20 @@
 <div id="image-detail-form" class="modal" onclick="hideModalForm()">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog" role="document" onclick="event.stopPropagation()">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="image-header">{{name}}</h5>
-        <button type="button" class="btn-close" onclick="hideModalForm()" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true"></span>
-        </button>
+        <button type="button" class="btn-close" onclick="hideModalForm()" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <div>
-        <img id="product-image" src="{{imageUrl}}" alt="">
+      <div class="modal-body" style="padding: var(--spacing-xl);">
+        <div style="text-align: center;">
+          <img id="product-image" src="{{imageUrl}}" alt="{{name}}" style="max-width: 100%; height: auto; border-radius: var(--radius-lg);">
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="hideModalForm()">
+          <i class="fas fa-times" style="margin-right: 0.5rem;"></i>Close
+        </button>
       </div>
     </div>
   </div>
-
 </div>
