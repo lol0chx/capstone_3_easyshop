@@ -70,11 +70,10 @@ class ShoppingCartService {
 
     loadCartPage()
     {
-        // templateBuilder.build("cart", this.cart, "main");
-
         const main = document.getElementById("main")
         main.innerHTML = "";
 
+        // wrapper
         let div = document.createElement("div");
         div.classList.add("filter-box");
         main.appendChild(div);
@@ -83,6 +82,7 @@ class ShoppingCartService {
         contentDiv.id = "content";
         contentDiv.classList.add("content-form");
 
+        // header
         const cartHeader = document.createElement("div")
         cartHeader.classList.add("cart-header")
 
@@ -98,12 +98,22 @@ class ShoppingCartService {
         cartHeader.appendChild(button)
 
         contentDiv.appendChild(cartHeader)
-        main.appendChild(contentDiv);
 
-        // let parent = document.getElementById("cart-item-list");
+        // items list
         this.cart.items.forEach(item => {
             this.buildItem(item, contentDiv)
         });
+
+        // total summary at bottom
+        const totalBox = document.createElement("div");
+        totalBox.classList.add("cart-total", "mt-3");
+        const totalLabel = document.createElement("h2");
+        const totalNumber = Number(this.cart.total || 0);
+        totalLabel.innerText = `Total: $${totalNumber.toFixed(2)}`;
+        totalBox.appendChild(totalLabel);
+        contentDiv.appendChild(totalBox);
+
+        main.appendChild(contentDiv);
     }
 
     buildItem(item, parent)
@@ -239,8 +249,12 @@ class ShoppingCartService {
         const url = `${config.baseUrl}/cart/products/${productId}`;
         axios.delete(url)
             .then(() => {
-                // remove locally and refresh
-                this.cart.items = this.cart.items.filter(i => i.product.productId !== productId);
+                // Reload cart from server to ensure total stays accurate
+                const cartUrl = `${config.baseUrl}/cart`;
+                return axios.get(cartUrl)
+            })
+            .then(response => {
+                this.setCart(response.data);
                 this.updateCartDisplay();
                 this.loadCartPage();
             })
