@@ -6,11 +6,34 @@ class ProfileService
     {
         const url = `${config.baseUrl}/profile`;
 
-        axios.get(url)
+        axios.get(url, { headers: userService.getHeaders() })
              .then(response => {
                  templateBuilder.build("profile", response.data, "main")
              })
              .catch(error => {
+                 // If unauthorized, prompt to login
+                 if (error && error.response && error.response.status === 401) {
+                     templateBuilder.append("error", { error: "Please login to view your profile." }, "errors");
+                     showLoginForm();
+                     return;
+                 }
+
+                 // If not found, load empty form to allow first-time completion
+                 if (error && error.response && error.response.status === 404) {
+                     templateBuilder.build("profile", {
+                         firstName: "",
+                         lastName: "",
+                         phone: "",
+                         email: "",
+                         address: "",
+                         city: "",
+                         state: "",
+                         zip: ""
+                     }, "main");
+                     templateBuilder.append("message", { message: "No profile found. Please complete your profile." }, "errors");
+                     return;
+                 }
+
                  const data = {
                      error: "Load profile failed."
                  };
@@ -21,10 +44,9 @@ class ProfileService
 
     updateProfile(profile)
     {
-
         const url = `${config.baseUrl}/profile`;
 
-        axios.put(url, profile)
+        axios.put(url, profile, { headers: userService.getHeaders() })
              .then(() => {
                  const data = {
                      message: "The profile has been updated."
@@ -33,6 +55,13 @@ class ProfileService
                  templateBuilder.append("message", data, "errors")
              })
              .catch(error => {
+                 // If unauthorized, prompt login
+                 if (error && error.response && error.response.status === 401) {
+                     templateBuilder.append("error", { error: "Please login before saving your profile." }, "errors");
+                     showLoginForm();
+                     return;
+                 }
+
                  const data = {
                      error: "Save profile failed."
                  };

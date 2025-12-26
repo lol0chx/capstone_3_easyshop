@@ -44,4 +44,71 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
         }
     }
 
+    @Override
+    public Profile getByUserId(int userId)
+    {
+        String sql = "SELECT user_id, first_name, last_name, phone, email, address, city, state, zip " +
+                "FROM profiles WHERE user_id = ?";
+
+        try (Connection connection = getConnection())
+        {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next())
+            {
+                return mapRow(rs);
+            }
+            return null;
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Profile update(Profile profile)
+    {
+        String sql = "UPDATE profiles SET first_name = ?, last_name = ?, phone = ?, email = ?, address = ?, city = ?, state = ?, zip = ? " +
+                "WHERE user_id = ?";
+
+        try (Connection connection = getConnection())
+        {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, profile.getFirstName());
+            ps.setString(2, profile.getLastName());
+            ps.setString(3, profile.getPhone());
+            ps.setString(4, profile.getEmail());
+            ps.setString(5, profile.getAddress());
+            ps.setString(6, profile.getCity());
+            ps.setString(7, profile.getState());
+            ps.setString(8, profile.getZip());
+            ps.setInt(9, profile.getUserId());
+
+            ps.executeUpdate();
+
+            return getByUserId(profile.getUserId());
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Profile mapRow(ResultSet rs) throws SQLException
+    {
+        int userId = rs.getInt("user_id");
+        String firstName = rs.getString("first_name");
+        String lastName = rs.getString("last_name");
+        String phone = rs.getString("phone");
+        String email = rs.getString("email");
+        String address = rs.getString("address");
+        String city = rs.getString("city");
+        String state = rs.getString("state");
+        String zip = rs.getString("zip");
+
+        return new Profile(userId, firstName, lastName, phone, email, address, city, state, zip);
+    }
+
 }

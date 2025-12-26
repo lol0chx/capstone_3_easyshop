@@ -6,7 +6,7 @@
     <p style="color: var(--text-light); font-size: var(--font-size-sm);">Update your personal information and address</p>
   </div>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg);">
+  <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg);">
     <div class="form-floating mb-3">
       <input type="text" class="form-control" id="firstName" placeholder="First Name" value='{{firstName}}'>
       <label for="firstName"><i class="fas fa-user" style="margin-right: 0.5rem;"></i>First Name</label>
@@ -17,7 +17,7 @@
     </div>
   </div>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg);">
+  <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg);">
     <div class="form-floating mb-3">
       <input type="tel" class="form-control" id="phone" placeholder="Phone" value='{{phone}}'>
       <label for="phone"><i class="fas fa-phone" style="margin-right: 0.5rem;"></i>Phone</label>
@@ -33,7 +33,7 @@
     <label for="address"><i class="fas fa-map-marker-alt" style="margin-right: 0.5rem;"></i>Street Address</label>
   </div>
 
-  <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--spacing-lg);">
+  <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg);">
     <div class="form-floating mb-3">
       <input type="text" class="form-control" id="city" placeholder="City" value='{{city}}'>
       <label for="city"><i class="fas fa-city" style="margin-right: 0.5rem;"></i>City</label>
@@ -49,10 +49,10 @@
   </div>
 
   <div style="display: flex; gap: var(--spacing-lg); margin-top: var(--spacing-xl);">
-    <button class="btn btn-primary" onclick="saveProfile()" style="flex: 1;">
+    <button class="btn btn-primary btn-sm" onclick="saveProfile()">
       <i class="fas fa-save" style="margin-right: 0.5rem;"></i>Save Changes
     </button>
-    <button class="btn btn-secondary" onclick="loadHome()" style="flex: 1;">
+    <button class="btn btn-secondary btn-sm" onclick="loadHome()">
       <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i>Back to Store
     </button>
   </div>
