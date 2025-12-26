@@ -305,6 +305,19 @@ main .cart-page-wrapper {
     width: 100%;
 }
 
+/* Override product grid when rendering forms (e.g., Profile page) */
+#content.content-form {
+    display: flex;              /* override #content grid */
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-xl);
+}
+
+#content.content-form .form-floating {
+    width: 100%;
+}
+
 #content.empty {
     display: flex;
     align-items: center;
