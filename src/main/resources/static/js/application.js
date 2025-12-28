@@ -45,6 +45,8 @@ function showImageDetailForm(product, imageUrl)
 function loadHome()
 {
     templateBuilder.build('home',{},'main');
+    const mainEl = document.querySelector('main');
+    if (mainEl) mainEl.classList.remove('no-sidebar');
     
     setTimeout(() => {
         productService.search();
@@ -61,12 +63,18 @@ function saveProfile()
 {
     const firstName = document.getElementById("firstName").value;
     const lastName = document.getElementById("lastName").value;
+    const company = document.getElementById("company") ? document.getElementById("company").value : "";
     const phone = document.getElementById("phone").value;
+    const secondaryPhone = document.getElementById("secondaryPhone") ? document.getElementById("secondaryPhone").value : "";
     const email = document.getElementById("email").value;
+    const preferredContact = document.getElementById("preferredContact") ? document.getElementById("preferredContact").value : "email";
+    const newsletter = document.getElementById("newsletter") ? document.getElementById("newsletter").checked : false;
     const address = document.getElementById("address").value;
+    const address2 = document.getElementById("address2") ? document.getElementById("address2").value : "";
     const city = document.getElementById("city").value;
     const state = document.getElementById("state").value;
     const zip = document.getElementById("zip").value;
+    const country = document.getElementById("country") ? document.getElementById("country").value : "";
 
     if (!firstName || !lastName || !email) {
         alert('Please fill in required fields (First Name, Last Name, Email)');
@@ -76,12 +84,18 @@ function saveProfile()
     const profile = {
         firstName,
         lastName,
+        company,
         phone,
+        secondaryPhone,
         email,
+        preferredContact,
+        newsletter,
         address,
+        address2,
         city,
         state,
-        zip
+        zip,
+        country
     };
 
     profileService.updateProfile(profile);

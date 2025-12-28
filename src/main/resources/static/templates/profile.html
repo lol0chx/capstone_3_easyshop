@@ -6,6 +6,14 @@
     <p style="color: var(--text-light); font-size: var(--font-size-sm);">Update your personal information and address</p>
   </div>
 
+  <!-- Account Info -->
+  <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg);">
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="username" placeholder="Username" value='{{username}}' disabled>
+      <label for="username"><i class="fas fa-id-badge" style="margin-right: 0.5rem;"></i>Username</label>
+    </div>
+  </div>
+
   <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg);">
     <div class="form-floating mb-3">
       <input type="text" class="form-control" id="firstName" placeholder="First Name" value='{{firstName}}'>
@@ -15,6 +23,10 @@
       <input type="text" class="form-control" id="lastName" placeholder="Last Name" value='{{lastName}}'>
       <label for="lastName"><i class="fas fa-user" style="margin-right: 0.5rem;"></i>Last Name</label>
     </div>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="company" placeholder="Company" value='{{company}}'>
+      <label for="company"><i class="fas fa-building" style="margin-right: 0.5rem;"></i>Company (optional)</label>
+    </div>
   </div>
 
   <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg);">
@@ -23,14 +35,35 @@
       <label for="phone"><i class="fas fa-phone" style="margin-right: 0.5rem;"></i>Phone</label>
     </div>
     <div class="form-floating mb-3">
+      <input type="tel" class="form-control" id="secondaryPhone" placeholder="Secondary Phone" value='{{secondaryPhone}}'>
+      <label for="secondaryPhone"><i class="fas fa-phone" style="margin-right: 0.5rem;"></i>Secondary Phone (optional)</label>
+    </div>
+    <div class="form-floating mb-3">
       <input type="email" class="form-control" id="email" placeholder="Email" value='{{email}}'>
       <label for="email"><i class="fas fa-envelope" style="margin-right: 0.5rem;"></i>Email</label>
+    </div>
+    <div class="form-floating mb-3">
+      <select class="form-select" id="preferredContact">
+        <option value="email" {{#preferredContactEmail}}selected{{/preferredContactEmail}}>Email</option>
+        <option value="phone" {{#preferredContactPhone}}selected{{/preferredContactPhone}}>Phone</option>
+        <option value="sms" {{#preferredContactSms}}selected{{/preferredContactSms}}>SMS</option>
+      </select>
+      <label for="preferredContact"><i class="fas fa-address-card" style="margin-right: 0.5rem;"></i>Preferred Contact Method</label>
+    </div>
+    <div class="form-check mb-3" style="padding-left: 1.25rem;">
+      <input class="form-check-input" type="checkbox" id="newsletter" {{#newsletter}}checked{{/newsletter}}>
+      <label class="form-check-label" for="newsletter"><i class="fas fa-newspaper" style="margin-right: 0.5rem;"></i>Subscribe to newsletter</label>
     </div>
   </div>
 
   <div class="form-floating mb-3">
     <input type="text" class="form-control" id="address" placeholder="Street Address" value='{{address}}'>
     <label for="address"><i class="fas fa-map-marker-alt" style="margin-right: 0.5rem;"></i>Street Address</label>
+  </div>
+
+  <div class="form-floating mb-3">
+    <input type="text" class="form-control" id="address2" placeholder="Apartment, suite, etc." value='{{address2}}'>
+    <label for="address2"><i class="fas fa-door-open" style="margin-right: 0.5rem;"></i>Apartment / Suite (optional)</label>
   </div>
 
   <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg);">
@@ -45,6 +78,10 @@
     <div class="form-floating mb-3">
       <input type="text" class="form-control" id="zip" placeholder="ZIP Code" value='{{zip}}'>
       <label for="zip"><i class="fas fa-location-dot" style="margin-right: 0.5rem;"></i>ZIP</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="country" placeholder="Country" value='{{country}}'>
+      <label for="country"><i class="fas fa-globe" style="margin-right: 0.5rem;"></i>Country</label>
     </div>
   </div>
 

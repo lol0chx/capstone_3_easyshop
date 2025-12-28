@@ -8,7 +8,28 @@ class ProfileService
 
         axios.get(url, { headers: userService.getHeaders() })
              .then(response => {
-                 templateBuilder.build("profile", response.data, "main")
+                 const data = response.data || {};
+                 const merged = Object.assign({
+                     username: userService.getUserName(),
+                     company: "",
+                     secondaryPhone: "",
+                     preferredContact: "email",
+                     preferredContactEmail: true,
+                     preferredContactPhone: false,
+                     preferredContactSms: false,
+                     newsletter: false,
+                     address2: "",
+                     country: ""
+                 }, data);
+
+                 // flags for contact select
+                 merged.preferredContactEmail = merged.preferredContact === "email";
+                 merged.preferredContactPhone = merged.preferredContact === "phone";
+                 merged.preferredContactSms = merged.preferredContact === "sms";
+
+                 templateBuilder.build("profile", merged, "main")
+                 const mainEl = document.querySelector('main');
+                 if (mainEl) mainEl.classList.add('no-sidebar');
              })
              .catch(error => {
                  // If unauthorized, prompt to login
