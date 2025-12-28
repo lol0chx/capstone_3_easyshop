@@ -23,7 +23,14 @@ class ProfileService
                      address2: "",
                      country: "",
                      bio: "",
-                     avatarDataUrl: ""
+                     avatarDataUrl: "",
+                     language: "en",
+                     timezone: "UTC",
+                     showEmail: false,
+                     website: "",
+                     twitter: "",
+                     instagram: "",
+                     deliveryInstructions: ""
                  }, data);
 
                  // flags for contact select
@@ -81,6 +88,17 @@ class ProfileService
                          reader.readAsDataURL(file);
                      });
                  }
+
+                 // compute profile completeness
+                 try {
+                     const required = [merged.firstName, merged.lastName, merged.email, merged.phone, merged.address, merged.city, merged.state, merged.zip];
+                     const filled = required.filter(v => v && String(v).trim().length > 0).length;
+                     const pct = Math.round((filled / required.length) * 100);
+                     const bar = document.getElementById('profileProgress');
+                     const text = document.getElementById('profileProgressText');
+                     if (bar) bar.style.width = pct + '%';
+                     if (text) text.textContent = pct + '%';
+                 } catch {}
              })
              .catch(error => {
                  // If unauthorized, prompt to login
