@@ -18,6 +18,17 @@
     </div>
   </div>
 
+  <!-- Profile Completion -->
+  <div style="background: var(--bg-light); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-lg);">
+    <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: var(--spacing-md);">
+      <span style="font-weight:600;">Profile completeness</span>
+      <span id="profileProgressText" style="color: var(--text-light);"></span>
+    </div>
+    <div style="height:10px; background: var(--border-color); border-radius: var(--radius-md); overflow:hidden;">
+      <div id="profileProgress" style="height:100%; width:0; background: var(--primary-color);"></div>
+    </div>
+  </div>
+
   <!-- Account Info -->
   <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg);">
     <div class="form-floating mb-3">
@@ -115,6 +126,48 @@
     <div class="mb-3">
       <label for="avatar" class="form-label"><i class="fas fa-image" style="margin-right: 0.5rem;"></i>Profile Photo</label>
       <input type="file" id="avatar" class="form-control" accept="image/*">
+    </div>
+    
+    <!-- Preferences -->
+    <div class="form-floating mb-3">
+      <select class="form-select" id="language">
+        <option value="en" {{#languageEn}}selected{{/languageEn}}>English</option>
+        <option value="es" {{#languageEs}}selected{{/languageEs}}>Spanish</option>
+        <option value="fr" {{#languageFr}}selected{{/languageFr}}>French</option>
+      </select>
+      <label for="language"><i class="fas fa-language" style="margin-right: 0.5rem;"></i>Preferred Language</label>
+    </div>
+    <div class="form-floating mb-3">
+      <select class="form-select" id="timezone">
+        <option value="UTC" {{#timezoneUTC}}selected{{/timezoneUTC}}>UTC</option>
+        <option value="EST" {{#timezoneEST}}selected{{/timezoneEST}}>Eastern (EST)</option>
+        <option value="PST" {{#timezonePST}}selected{{/timezonePST}}>Pacific (PST)</option>
+      </select>
+      <label for="timezone"><i class="fas fa-clock" style="margin-right: 0.5rem;"></i>Timezone</label>
+    </div>
+    <div class="form-check mb-3" style="padding-left: 1.25rem;">
+      <input class="form-check-input" type="checkbox" id="showEmail" {{#showEmail}}checked{{/showEmail}}>
+      <label class="form-check-label" for="showEmail"><i class="fas fa-eye" style="margin-right: 0.5rem;"></i>Show my email on profile</label>
+    </div>
+
+    <!-- Social -->
+    <div class="form-floating mb-3">
+      <input type="url" class="form-control" id="website" placeholder="Website" value='{{website}}'>
+      <label for="website"><i class="fas fa-link" style="margin-right: 0.5rem;"></i>Website</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="twitter" placeholder="Twitter handle" value='{{twitter}}'>
+      <label for="twitter"><i class="fab fa-twitter" style="margin-right: 0.5rem;"></i>Twitter</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="instagram" placeholder="Instagram handle" value='{{instagram}}'>
+      <label for="instagram"><i class="fab fa-instagram" style="margin-right: 0.5rem;"></i>Instagram</label>
+    </div>
+
+    <!-- Delivery Preferences -->
+    <div class="mb-3">
+      <label for="deliveryInstructions" class="form-label"><i class="fas fa-truck" style="margin-right: 0.5rem;"></i>Delivery Instructions</label>
+      <textarea id="deliveryInstructions" class="form-control" rows="2" placeholder="e.g., Leave at front desk">{{deliveryInstructions}}</textarea>
     </div>
   </div>
 
