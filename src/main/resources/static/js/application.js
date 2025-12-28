@@ -85,6 +85,13 @@ function saveProfile()
     if (previewEl && previewEl.src && previewEl.style.display !== "none") {
         avatarDataUrl = previewEl.src;
     }
+    const language = document.getElementById("language") ? document.getElementById("language").value : "en";
+    const timezone = document.getElementById("timezone") ? document.getElementById("timezone").value : "UTC";
+    const showEmail = document.getElementById("showEmail") ? document.getElementById("showEmail").checked : false;
+    const website = document.getElementById("website") ? document.getElementById("website").value : "";
+    const twitter = document.getElementById("twitter") ? document.getElementById("twitter").value : "";
+    const instagram = document.getElementById("instagram") ? document.getElementById("instagram").value : "";
+    const deliveryInstructions = document.getElementById("deliveryInstructions") ? document.getElementById("deliveryInstructions").value : "";
 
     if (!firstName || !lastName || !email) {
         alert('Please fill in required fields (First Name, Last Name, Email)');
@@ -119,7 +126,14 @@ function saveProfile()
         address2,
         country,
         bio,
-        avatarDataUrl
+        avatarDataUrl,
+        language,
+        timezone,
+        showEmail,
+        website,
+        twitter,
+        instagram,
+        deliveryInstructions
     };
     profileService.updateProfile(profile, extras);
 }
