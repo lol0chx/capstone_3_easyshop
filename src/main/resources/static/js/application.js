@@ -64,6 +64,8 @@ function saveProfile()
     const firstName = document.getElementById("firstName").value;
     const lastName = document.getElementById("lastName").value;
     const company = document.getElementById("company") ? document.getElementById("company").value : "";
+    const dob = document.getElementById("dob") ? document.getElementById("dob").value : "";
+    const gender = document.getElementById("gender") ? document.getElementById("gender").value : "";
     const phone = document.getElementById("phone").value;
     const secondaryPhone = document.getElementById("secondaryPhone") ? document.getElementById("secondaryPhone").value : "";
     const email = document.getElementById("email").value;
@@ -75,6 +77,14 @@ function saveProfile()
     const state = document.getElementById("state").value;
     const zip = document.getElementById("zip").value;
     const country = document.getElementById("country") ? document.getElementById("country").value : "";
+    const bio = document.getElementById("bio") ? document.getElementById("bio").value : "";
+    const avatarInput = document.getElementById("avatar");
+    let avatarDataUrl = "";
+    // capture current preview if exists
+    const previewEl = document.getElementById("avatarPreview");
+    if (previewEl && previewEl.src && previewEl.style.display !== "none") {
+        avatarDataUrl = previewEl.src;
+    }
 
     if (!firstName || !lastName || !email) {
         alert('Please fill in required fields (First Name, Last Name, Email)');
@@ -85,6 +95,7 @@ function saveProfile()
         firstName,
         lastName,
         company,
+        dob,
         phone,
         secondaryPhone,
         email,
@@ -98,7 +109,19 @@ function saveProfile()
         country
     };
 
-    profileService.updateProfile(profile);
+    const extras = {
+        company,
+        dob,
+        gender,
+        secondaryPhone,
+        preferredContact,
+        newsletter,
+        address2,
+        country,
+        bio,
+        avatarDataUrl
+    };
+    profileService.updateProfile(profile, extras);
 }
 
 function showCart()
