@@ -44,6 +44,18 @@ class ProfileService
                  merged.genderOther = merged.gender === "other";
                  merged.genderUnknown = !merged.gender;
 
+                 // language flags
+                 const lang = (merged.language || "en").toLowerCase();
+                 merged.languageEn = lang === "en";
+                 merged.languageEs = lang === "es";
+                 merged.languageFr = lang === "fr";
+
+                 // timezone flags
+                 const tz = (merged.timezone || "UTC").toUpperCase();
+                 merged.timezoneUTC = tz === "UTC";
+                 merged.timezoneEST = tz === "EST";
+                 merged.timezonePST = tz === "PST";
+
                  // load extras from localStorage
                  const user = userService.getCurrentUser();
                  const extrasKey = `profileExtras_${user.userId}`;
