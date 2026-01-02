@@ -1,0 +1,41 @@
+<section>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+    <h2>Manage Products</h2>
+    <button class="btn btn-primary" onclick="showProductForm();">Add Product</button>
+  </div>
+  <div id="admin-products-errors"></div>
+  <table class="table" style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr>
+        <th style="text-align:left;">ID</th>
+        <th style="text-align:left;">Name</th>
+        <th style="text-align:left;">Price</th>
+        <th style="text-align:left;">Category</th>
+        <th style="text-align:left;">Stock</th>
+        <th style="text-align:left;">Featured</th>
+        <th style="text-align:left;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#products}}
+      <tr>
+        <td>{{productId}}</td>
+        <td>{{name}}</td>
+        <td>${{price}}</td>
+        <td>{{categoryId}}</td>
+        <td>{{stock}}</td>
+        <td>{{isFeatured}}</td>
+        <td>
+          <button class="btn btn-sm" onclick="editProduct({{productId}});">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteProduct({{productId}});">Delete</button>
+        </td>
+      </tr>
+      {{/products}}
+      {{^products}}
+      <tr><td colspan="7">No products found.</td></tr>
+      {{/products}}
+    </tbody>
+  </table>
+</section>
+
+<div id="admin-modal"></div>
