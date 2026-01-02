@@ -65,6 +65,11 @@ class UserService {
         return this.currentUser.token !== undefined;
     }
 
+    isAdmin()
+    {
+        return this.isLoggedIn() && this.currentUser.role === 'ROLE_ADMIN';
+    }
+
     getCurrentUser()
     {
         return this.currentUser;
@@ -75,7 +80,8 @@ class UserService {
         const user = {
                 username: this.getUserName(),
                 loggedin: this.isLoggedIn(),
-                loggedout: !this.isLoggedIn()
+                loggedout: !this.isLoggedIn(),
+                isAdmin: this.isAdmin()
             };
 
         templateBuilder.build('header', user, 'header-user');
