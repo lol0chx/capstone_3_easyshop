@@ -17,6 +17,9 @@
       </tr>
     </thead>
     <tbody>
+      {{#loading}}
+      <tr><td colspan="7">Loading...</td></tr>
+      {{/loading}}
       {{#products}}
       <tr>
         <td>{{productId}}</td>
@@ -31,9 +34,9 @@
         </td>
       </tr>
       {{/products}}
-      {{^products}}
+      {{#noProducts}}
       <tr><td colspan="7">No products found.</td></tr>
-      {{/products}}
+      {{/noProducts}}
     </tbody>
   </table>
 </section>
