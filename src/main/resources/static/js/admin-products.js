@@ -1,4 +1,5 @@
 let adminProducts = {};
+let adminModalOpen = false;
 
 function loadAdminProducts()
 {
@@ -6,18 +7,32 @@ function loadAdminProducts()
     if (mainEl) mainEl.classList.add('no-sidebar');
 
     // Render shell immediately so user sees navigation change
-    templateBuilder.build('admin-products', { products: [] }, 'main');
+    templateBuilder.build('admin-products', { products: [], loading: true, noProducts: false }, 'main');
 
     // Then fetch products and re-render with data
     console.log('Loading admin products from', `${config.baseUrl}/products`);
-    axios.get(`${config.baseUrl}/products`)
+    axios.get(`${config.baseUrl}/products`, { timeout: 8000 })
         .then(response => {
-            const data = { products: response.data };
-            templateBuilder.build('admin-products', data, 'main');
+            const list = Array.isArray(response.data) ? response.data : [];
+            // normalize fields so Mustache 0.1 doesn't error on missing keys
+            const normalized = list.map(p => ({
+                productId: p.productId !== undefined ? p.productId : (p.id !== undefined ? p.id : 0),
+                name: p.name !== undefined ? p.name : '',
+                price: p.price !== undefined ? p.price : 0,
+                categoryId: p.categoryId !== undefined ? p.categoryId : (p.category !== undefined ? p.category : 0),
+                stock: p.stock !== undefined ? p.stock : 0,
+                isFeatured: p.isFeatured !== undefined ? p.isFeatured : (p.featured !== undefined ? p.featured : false)
+            }));
+            const data = { products: normalized, loading: false, noProducts: normalized.length === 0 };
+            if (!adminModalOpen) {
+                templateBuilder.build('admin-products', data, 'main');
+            }
         })
         .catch((err) => {
             console.error('Admin products load failed:', err);
-            const inlineError = { error: 'Failed to load products from server.' };
+            const status = err && err.response ? err.response.status : 'N/A';
+            const msg = err && err.message ? err.message : 'Unknown error';
+            const inlineError = { error: `Failed to load products (status ${status}). ${msg}` };
             templateBuilder.append('error', inlineError, 'errors');
             // Keep shell visible; show a simple message inline
             const main = document.getElementById('main');
@@ -25,34 +40,42 @@ function loadAdminProducts()
                 const msg = document.createElement('div');
                 msg.style.padding = '1rem';
                 msg.style.color = 'crimson';
-                msg.textContent = 'Admin: could not load products. Check API (port 8080).';
+                msg.textContent = `Admin: could not load products. Check API (port 8080). Status: ${status}.`;
                 main.appendChild(msg);
+            }
+            if (!adminModalOpen) {
+                templateBuilder.build('admin-products', { products: [], loading: false, noProducts: true }, 'main');
             }
         });
 }
 
 function showProductForm(product)
 {
-    // get categories for dropdown
+    adminModalOpen = true;
+    // Render modal immediately with no categories, then load categories
+    templateBuilder.build('admin-product-form', { product: product || {}, categories: [] }, 'admin-modal');
+
     const categoriesUrl = `${config.baseUrl}/categories`;
-    axios.get(categoriesUrl, { headers: userService.getHeaders() })
+    axios.get(categoriesUrl, { timeout: 8000 })
         .then(resp => {
-            const categories = resp.data.map(c => ({
+            const categories = Array.isArray(resp.data) ? resp.data.map(c => ({
                 categoryId: c.categoryId,
                 name: c.name,
                 isSelected: product && product.categoryId === c.categoryId
-            }));
+            })) : [];
             const data = { product: product || {}, categories };
             templateBuilder.build('admin-product-form', data, 'admin-modal');
         })
-        .catch(() => {
-            templateBuilder.append('error', { error: 'Failed to load categories.' }, 'errors');
+        .catch((err) => {
+            const status = err && err.response ? err.response.status : 'N/A';
+            templateBuilder.append('error', { error: `Failed to load categories (status ${status}).` }, 'errors');
         });
 }
 
 function hideAdminModal()
 {
     templateBuilder.clear('admin-modal');
+    adminModalOpen = false;
 }
 
 function editProduct(id)
