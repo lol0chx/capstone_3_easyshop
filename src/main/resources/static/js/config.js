@@ -5,5 +5,5 @@ const isBootOrigin = origin.includes(":8080") || origin.includes(":8081");
 const config = {
     baseUrl: isBootOrigin ? origin : "http://localhost:8080"
 };
-// Optional: uncomment for quick diagnostics
-// console.log("API baseUrl:", config.baseUrl);
+// Diagnostics: always log the detected API base URL
+console.log("API baseUrl:", config.baseUrl, "page origin:", origin);
