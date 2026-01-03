@@ -22,11 +22,16 @@ class UserService {
 
     saveUser(user)
     {
+        const auths = Array.isArray(user.user.authorities)
+            ? user.user.authorities.map(a => a.name)
+            : [];
+
         this.currentUser = {
             token: user.token,
             userId: user.user.id,
             username: user.user.username,
-            role: user.user.authorities[0].name
+            role: auths[0] || user.user.getRole || 'ROLE_USER',
+            authorities: auths
         }
         localStorage.setItem('user', JSON.stringify(this.currentUser));
     }
@@ -67,7 +72,10 @@ class UserService {
 
     isAdmin()
     {
-        return this.isLoggedIn() && this.currentUser.role === 'ROLE_ADMIN';
+        return this.isLoggedIn() && (
+            (this.currentUser.authorities && this.currentUser.authorities.includes('ROLE_ADMIN')) ||
+            this.currentUser.role === 'ROLE_ADMIN'
+        );
     }
 
     getCurrentUser()
