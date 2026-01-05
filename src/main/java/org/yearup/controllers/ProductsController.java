@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.yearup.data.ProductDao;
 import org.yearup.models.Product;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 @RestController
 @RequestMapping("products")
@@ -44,6 +45,10 @@ public class ProductsController
         try
         {
             return productDao.search(categoryId, minPrice, maxPrice, subCategory);
+        }
+        catch (ResponseStatusException ex)
+        {
+            throw ex;
         }
         catch(Exception ex)
         {
@@ -113,7 +118,19 @@ public class ProductsController
             if(product == null)
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-            productDao.delete(id);
+            try
+            {
+                productDao.delete(id);
+            }
+            catch (RuntimeException ex)
+            {
+                Throwable cause = ex.getCause();
+                if (cause instanceof SQLIntegrityConstraintViolationException)
+                {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Product cannot be deleted due to existing references (orders)." );
+                }
+                throw ex;
+            }
         }
         catch(Exception ex)
         {
