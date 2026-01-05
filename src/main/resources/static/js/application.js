@@ -204,3 +204,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 100);
 });
+
+// Quick filter helpers for the sidebar
+function applyPricePreset(min, max)
+{
+    const minEl = document.getElementById('min-price');
+    const maxEl = document.getElementById('max-price');
+    if (minEl && maxEl) {
+        minEl.value = min;
+        maxEl.value = max;
+        setMinPrice(minEl);
+        setMaxPrice(maxEl);
+    }
+}
+
+function quickColor(color)
+{
+    const subEl = document.getElementById('subcategory-select');
+    if (subEl) {
+        subEl.value = color;
+        setSubcategory(subEl);
+    }
+}
+
+function resetAllFilters()
+{
+    const catEl = document.getElementById('category-select');
+    const minEl = document.getElementById('min-price');
+    const maxEl = document.getElementById('max-price');
+    const subEl = document.getElementById('subcategory-select');
+
+    if (catEl) { catEl.value = 0; setCategory(catEl); }
+    if (minEl) { minEl.value = 0; setMinPrice(minEl); }
+    if (maxEl) { maxEl.value = 1500; setMaxPrice(maxEl); }
+    if (subEl) { subEl.value = ''; setSubcategory(subEl); }
+}
