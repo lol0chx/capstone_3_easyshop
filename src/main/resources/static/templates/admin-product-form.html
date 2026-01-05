@@ -1,14 +1,14 @@
 <div class="modal" onclick="hideAdminModal()">
   <div class="modal-dialog" role="document" onclick="event.stopPropagation()">
     <div class="modal-content" style="padding:1rem;">
-      <h3>{{#product.productId}}Edit Product #{{product.productId}}{{/product.productId}}{{^product.productId}}Add Product{{/product.productId}}</h3>
+      <h3>{{#productId}}Edit Product #{{productId}}{{/productId}}{{#isNew}}Add Product{{/isNew}}</h3>
       <div id="admin-form-errors"></div>
       <form id="productForm" onsubmit="submitProductForm(event)">
-        <input type="hidden" id="productId" value="{{product.productId}}" />
+        <input type="hidden" id="productId" value="{{productId}}" />
         <label>Name</label>
-        <input type="text" id="name" value="{{product.name}}" required />
+        <input type="text" id="name" value="{{name}}" required />
         <label>Price</label>
-        <input type="number" id="price" step="0.01" value="{{product.price}}" required />
+        <input type="number" id="price" step="0.01" value="{{price}}" required />
         <label>Category</label>
         <select id="categoryId">
           {{#categories}}
@@ -16,15 +16,15 @@
           {{/categories}}
         </select>
         <label>Subcategory</label>
-        <input type="text" id="subCategory" value="{{product.subCategory}}" />
+        <input type="text" id="subCategory" value="{{subCategory}}" />
         <label>Stock</label>
-        <input type="number" id="stock" value="{{product.stock}}" />
+        <input type="number" id="stock" value="{{stock}}" />
         <label>Featured</label>
-        <input type="checkbox" id="isFeatured" {{#product.isFeatured}}checked{{/product.isFeatured}} />
+        <input type="checkbox" id="isFeatured" {{#isFeatured}}checked{{/isFeatured}} />
         <label>Image URL</label>
-        <input type="text" id="imageUrl" value="{{product.imageUrl}}" />
+        <input type="text" id="imageUrl" value="{{imageUrl}}" />
         <label>Description</label>
-        <textarea id="description">{{product.description}}</textarea>
+        <textarea id="description">{{description}}</textarea>
         <div style="margin-top:1rem; display:flex; gap:.5rem;">
           <button type="submit" class="btn btn-primary">Save</button>
           <button type="button" class="btn" onclick="hideAdminModal()">Cancel</button>

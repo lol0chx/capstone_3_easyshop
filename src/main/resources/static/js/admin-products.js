@@ -52,8 +52,23 @@ function loadAdminProducts()
 function showProductForm(product)
 {
     adminModalOpen = true;
-    // Render modal immediately with no categories, then load categories
-    templateBuilder.build('admin-product-form', { product: product || {}, categories: [] }, 'admin-modal');
+    // Flatten product fields for Mustache 0.1 (no dotted paths)
+    const p = product || {};
+    const formModel = {
+        productId: p.productId || 0,
+        name: p.name || '',
+        price: p.price || 0,
+        categoryId: p.categoryId || 0,
+        subCategory: p.subCategory || '',
+        stock: p.stock || 0,
+        isFeatured: (p.isFeatured !== undefined ? p.isFeatured : (p.featured !== undefined ? p.featured : false)),
+        imageUrl: p.imageUrl || '',
+        description: p.description || '',
+        isNew: !p.productId
+    };
+
+    // Render modal immediately with empty categories; will update after fetch
+    templateBuilder.build('admin-product-form', { ...formModel, categories: [] }, 'admin-modal');
 
     const categoriesUrl = `${config.baseUrl}/categories`;
     axios.get(categoriesUrl, { timeout: 8000 })
@@ -63,8 +78,7 @@ function showProductForm(product)
                 name: c.name,
                 isSelected: product && product.categoryId === c.categoryId
             })) : [];
-            const data = { product: product || {}, categories };
-            templateBuilder.build('admin-product-form', data, 'admin-modal');
+            templateBuilder.build('admin-product-form', { ...formModel, categories }, 'admin-modal');
         })
         .catch((err) => {
             const status = err && err.response ? err.response.status : 'N/A';
@@ -80,24 +94,35 @@ function hideAdminModal()
 
 function editProduct(id)
 {
+    console.log('Admin: editProduct clicked for id', id);
     const url = `${config.baseUrl}/products/${id}`;
-    axios.get(url, { headers: userService.getHeaders() })
+    axios.get(url, { timeout: 8000 })
         .then(response => {
+            console.log('Admin: loaded product', response.data);
             showProductForm(response.data);
         })
-        .catch(() => {
-            templateBuilder.append('error', { error: 'Failed to load product.' }, 'errors');
+        .catch((err) => {
+            const status = err && err.response ? err.response.status : 'N/A';
+            console.error('Admin: load product failed', status, err);
+            templateBuilder.append('error', { error: `Failed to load product (status ${status}).` }, 'errors');
         });
 }
 
 function deleteProduct(id)
 {
+    console.log('Admin: deleteProduct clicked for id', id);
     if (!confirm('Delete this product?')) return;
     const url = `${config.baseUrl}/products/${id}`;
-    axios.delete(url, { headers: userService.getHeaders() })
-        .then(() => loadAdminProducts())
-        .catch(() => {
-            templateBuilder.append('error', { error: 'Failed to delete product.' }, 'errors');
+    axios.delete(url, { headers: userService.getHeaders(), timeout: 8000 })
+        .then(() => {
+            console.log('Admin: product deleted', id);
+            loadAdminProducts();
+        })
+        .catch((err) => {
+            const status = err && err.response ? err.response.status : 'N/A';
+            const msg = err && err.message ? err.message : 'Unknown error';
+            console.error('Admin: delete failed', status, msg);
+            templateBuilder.append('error', { error: `Failed to delete product (status ${status}). ${msg}` }, 'errors');
         });
 }
 
