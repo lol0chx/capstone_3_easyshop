@@ -49,10 +49,13 @@ function loadHome()
     if (mainEl) mainEl.classList.remove('no-sidebar');
     
     setTimeout(() => {
+        if (productService && productService.computePageSize) { productService.computePageSize(); }
         productService.search();
         categoryService.getAllCategories(loadCategories);
     }, 100);
 }
+
+// toggleFilters removed; filters remain visible in left sidebar
 
 function editProfile()
 {

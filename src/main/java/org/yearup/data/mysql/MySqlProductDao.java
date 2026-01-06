@@ -63,6 +63,98 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
     }
 
     @Override
+    public List<Product> searchPage(Integer categoryId, BigDecimal minPrice, BigDecimal maxPrice, String subCategory, int page, int size)
+    {
+        List<Product> products = new ArrayList<>();
+
+        String sql = "SELECT * FROM products " +
+            "WHERE (category_id = ? OR ? = -1) " +
+            "   AND (price >= ? OR ? = -1) " +
+            "   AND (price <= ? OR ? = -1) " +
+            "   AND (LOWER(subcategory) = LOWER(?) OR ? = '') " +
+            "ORDER BY product_id ASC " +
+            "LIMIT ? OFFSET ?";
+
+        categoryId = categoryId == null ? -1 : categoryId;
+        BigDecimal min = (minPrice == null ? new BigDecimal("-1") : minPrice);
+        BigDecimal max = (maxPrice == null ? new BigDecimal("-1") : maxPrice);
+        String sub = (subCategory == null ? "" : subCategory);
+        int safePage = (page <= 0 ? 1 : page);
+        int safeSize = (size <= 0 ? 12 : size);
+        int offset = (safePage - 1) * safeSize;
+
+        try (Connection connection = getConnection())
+        {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, categoryId);
+            statement.setInt(2, categoryId);
+            statement.setBigDecimal(3, min);
+            statement.setBigDecimal(4, min);
+            statement.setBigDecimal(5, max);
+            statement.setBigDecimal(6, max);
+            statement.setString(7, sub);
+            statement.setString(8, sub);
+            statement.setInt(9, safeSize);
+            statement.setInt(10, offset);
+
+            ResultSet row = statement.executeQuery();
+
+            while (row.next())
+            {
+                Product product = mapRow(row);
+                products.add(product);
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        return products;
+    }
+
+    @Override
+    public int count(Integer categoryId, BigDecimal minPrice, BigDecimal maxPrice, String subCategory)
+    {
+        String sql = "SELECT COUNT(*) AS total FROM products " +
+            "WHERE (category_id = ? OR ? = -1) " +
+            "   AND (price >= ? OR ? = -1) " +
+            "   AND (price <= ? OR ? = -1) " +
+            "   AND (LOWER(subcategory) = LOWER(?) OR ? = '') ";
+
+        categoryId = categoryId == null ? -1 : categoryId;
+        BigDecimal min = (minPrice == null ? new BigDecimal("-1") : minPrice);
+        BigDecimal max = (maxPrice == null ? new BigDecimal("-1") : maxPrice);
+        String sub = (subCategory == null ? "" : subCategory);
+
+        try (Connection connection = getConnection())
+        {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, categoryId);
+            statement.setInt(2, categoryId);
+            statement.setBigDecimal(3, min);
+            statement.setBigDecimal(4, min);
+            statement.setBigDecimal(5, max);
+            statement.setBigDecimal(6, max);
+            statement.setString(7, sub);
+            statement.setString(8, sub);
+
+            ResultSet row = statement.executeQuery();
+
+            if (row.next())
+            {
+                return row.getInt("total");
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        return 0;
+    }
+
+    @Override
     public List<Product> listByCategoryId(int categoryId)
     {
         List<Product> products = new ArrayList<>();
