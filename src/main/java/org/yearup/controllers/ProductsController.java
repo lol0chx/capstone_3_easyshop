@@ -39,12 +39,39 @@ public class ProductsController
     public List<Product> search(@RequestParam(name="cat", required = false) Integer categoryId,
                                 @RequestParam(name="minPrice", required = false) BigDecimal minPrice,
                                 @RequestParam(name="maxPrice", required = false) BigDecimal maxPrice,
-                                @RequestParam(name="subCategory", required = false) String subCategory
+                                @RequestParam(name="subCategory", required = false) String subCategory,
+                                @RequestParam(name="page", required = false) Integer page,
+                                @RequestParam(name="size", required = false) Integer size
                                 )
     {
         try
         {
+            if (page != null && size != null)
+            {
+                return productDao.searchPage(categoryId, minPrice, maxPrice, subCategory, page, size);
+            }
             return productDao.search(categoryId, minPrice, maxPrice, subCategory);
+        }
+        catch (ResponseStatusException ex)
+        {
+            throw ex;
+        }
+        catch(Exception ex)
+        {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
+    }
+
+    @GetMapping("count")
+    @PreAuthorize("permitAll()")
+    public int count(@RequestParam(name="cat", required = false) Integer categoryId,
+                     @RequestParam(name="minPrice", required = false) BigDecimal minPrice,
+                     @RequestParam(name="maxPrice", required = false) BigDecimal maxPrice,
+                     @RequestParam(name="subCategory", required = false) String subCategory)
+    {
+        try
+        {
+            return productDao.count(categoryId, minPrice, maxPrice, subCategory);
         }
         catch (ResponseStatusException ex)
         {

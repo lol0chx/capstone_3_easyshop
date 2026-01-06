@@ -10,7 +10,7 @@ class ProductService {
         minPrice: undefined,
         maxPrice: undefined,
         subCategory: undefined,
-        queryString: () => {
+        queryString: (includePaging) => {
             let qs = "";
             if(this.filter.cat){ qs = `cat=${this.filter.cat}`; }
             if(this.filter.minPrice)
@@ -32,6 +32,14 @@ class ProductService {
                 else { qs = sub; }
             }
 
+            if(includePaging)
+            {
+                const p = `page=${this.page}`;
+                const s = `size=${this.size}`;
+                if(qs.length>0) { qs += `&${p}&${s}`; }
+                else { qs = `${p}&${s}`; }
+            }
+
             return qs.length > 0 ? `?${qs}` : "";
         }
     }
@@ -43,6 +51,27 @@ class ProductService {
             .then(response => {
                 this.photos = response.data;
             });
+    }
+
+    page = 1;
+    size = 12;
+    total = 0;
+
+    computePageSize()
+    {
+        // Show exactly two rows of products based on available width
+        try {
+            const content = document.getElementById('content');
+            if (!content) return;
+            const width = content.clientWidth || window.innerWidth;
+            const minCardW = 280;
+            const cols = Math.max(1, Math.floor(width / minCardW));
+            const computed = cols * 2; // two rows
+            // Clamp to a reasonable range
+            this.size = Math.min(24, Math.max(4, computed));
+        } catch (_) {
+            // keep default size
+        }
     }
 
     hasPhoto(photo){
@@ -89,25 +118,35 @@ class ProductService {
 
     search()
     {
-        const url = `${config.baseUrl}/products${this.filter.queryString()}`;
+        this.computePageSize();
+        const countUrl = `${config.baseUrl}/products/count${this.filter.queryString(false)}`;
+        const pageUrl = `${config.baseUrl}/products${this.filter.queryString(true)}`;
 
-        axios.get(url)
-             .then(response => {
-                 let data = {};
-                 data.products = response.data;
+        axios.get(countUrl)
+            .then(countResp => {
+                this.total = countResp.data || 0;
+                return axios.get(pageUrl);
+            })
+            .then(response => {
+                let data = {};
+                data.products = response.data;
 
-                 data.products.forEach(product => {
-                     if(!this.hasPhoto(product.imageUrl))
-                     {
-                         product.imageUrl = "no-image.jpg";
-                     }
-                 })
+                data.products.forEach(product => {
+                    if(!this.hasPhoto(product.imageUrl))
+                    {
+                        product.imageUrl = "no-image.jpg";
+                    }
+                })
 
-                 templateBuilder.build('product', data, 'content', this.enableButtons);
+                data.page = this.page;
+                data.size = this.size;
+                data.total = this.total;
+                data.hasPrev = this.page > 1;
+                data.hasNext = (this.page * this.size) < this.total;
 
-             })
+                templateBuilder.build('product', data, 'content', this.enableButtons);
+            })
             .catch(error => {
-
                 const data = {
                     error: "Searching products failed."
                 };
@@ -134,6 +173,23 @@ class ProductService {
         }
     }
 
+    nextPage()
+    {
+        if ((this.page * this.size) < this.total)
+        {
+            this.page += 1;
+            this.search();
+        }
+    }
+
+    prevPage()
+    {
+        if (this.page > 1)
+        {
+            this.page -= 1;
+            this.search();
+        }
+    }
 }
 
 

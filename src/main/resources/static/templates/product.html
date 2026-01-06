@@ -16,3 +16,13 @@
     </div>
 </div>
 {{/products}}
+
+<div class="pagination" style="display:flex; align-items:center; gap:.75rem; margin-top:1rem;">
+    {{#hasPrev}}
+    <button class="btn btn-outline-secondary" onclick="productService.prevPage()">Previous</button>
+    {{/hasPrev}}
+    <span style="color: var(--text-light);">Page {{page}}</span>
+    {{#hasNext}}
+    <button class="btn btn-outline-secondary" onclick="productService.nextPage()">Next</button>
+    {{/hasNext}}
+</div>
