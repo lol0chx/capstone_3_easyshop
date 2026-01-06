@@ -221,6 +221,11 @@ main.no-sidebar {
     grid-template-columns: 1fr;
 }
 
+/* Hide sidebar entirely in no-sidebar mode */
+main.no-sidebar .filter-box {
+    display: none;
+}
+
 main .cart-page-wrapper {
     grid-column: 1 / -1;
     padding: var(--spacing-xl);
@@ -303,6 +308,31 @@ main .cart-page-wrapper {
     background-color: var(--bg-lighter);
     min-height: calc(100vh - 80px);
     width: 100%;
+}
+
+/* Toolbar & collapsible filter panel rendered above the grid */
+.filter-toolbar {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-xl);
+    background-color: var(--bg-lighter);
+}
+
+.filter-panel {
+    grid-column: 1 / -1;
+    background-color: var(--bg-light);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    margin: 0 var(--spacing-xl);
+}
+
+/* Make the pagination span full width at the bottom of the grid */
+#content .pagination {
+    grid-column: 1 / -1;
+    justify-content: center;
 }
 
 /* Override product grid when rendering forms (e.g., Profile page) */
