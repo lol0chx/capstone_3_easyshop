@@ -1,4 +1,7 @@
-
+// Load footer on page initialization
+function initializeFooter() {
+    templateBuilder.build('footer', {}, 'footer-placeholder');
+}
 
 function showLoginForm()
 {
@@ -197,6 +200,9 @@ let appInitialized = false;
 document.addEventListener('DOMContentLoaded', () => {
     if (appInitialized) return;
     appInitialized = true;
+    
+    // Initialize footer
+    initializeFooter();
     
     setTimeout(() => {
         if (userService && userService.isLoggedIn()) {
