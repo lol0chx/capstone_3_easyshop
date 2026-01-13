@@ -206,6 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     setTimeout(() => {
         if (userService && userService.isLoggedIn()) {
+            if (wishlistService) { wishlistService.load(); }
             loadHome();
             userService.setHeaderLogin();
         } else {
