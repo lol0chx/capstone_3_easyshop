@@ -9,9 +9,12 @@
     </div>
     <p>{{description}}</p>
     <div class="price">${{price}}</div>
-    <div class="add-button">
+    <div class="add-button" style="display:flex; gap:.5rem;">
         <button class="btn btn-success" onclick="cartService.addToCart({{productId}})" title="Add this product to your cart">
             <i class="fas fa-shopping-cart" style="margin-right: 0.5rem;"></i>Add to Cart
+        </button>
+        <button class="btn {{#isWishlisted}}btn-danger{{/isWishlisted}}{{^isWishlisted}}btn-outline-danger{{/isWishlisted}}" onclick="wishlistService.toggle({{productId}})" title="Add to Wishlist">
+            <i class="fas fa-heart" style="margin-right: 0.25rem;"></i>{{#isWishlisted}}Wishlisted{{/isWishlisted}}{{^isWishlisted}}Wishlist{{/isWishlisted}}
         </button>
     </div>
 </div>
