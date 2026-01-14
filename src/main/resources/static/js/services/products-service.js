@@ -136,6 +136,14 @@ class ProductService {
                     {
                         product.imageUrl = "no-image.jpg";
                     }
+                    // mark wishlist state if available
+                    try {
+                        if (typeof wishlistService !== 'undefined' && wishlistService && wishlistService.loaded) {
+                            product.isWishlisted = wishlistService.has(product.productId);
+                        } else {
+                            product.isWishlisted = false;
+                        }
+                    } catch(_) { product.isWishlisted = false; }
                 })
 
                 data.page = this.page;
