@@ -92,6 +92,14 @@ CREATE TABLE shopping_cart (
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
+CREATE TABLE wishlist (
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, product_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
 
 /*  INSERT Users  */
 INSERT INTO users (username, hashed_password, role) 
