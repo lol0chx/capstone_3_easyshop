@@ -82,7 +82,6 @@ CREATE TABLE order_line_items (
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
--- new tables
 CREATE TABLE shopping_cart (
 	user_id INT NOT NULL,
     product_id INT NOT NULL,
@@ -90,6 +89,19 @@ CREATE TABLE shopping_cart (
     PRIMARY KEY (user_id, product_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+-- ============================================
+-- Wishlist support
+-- ============================================
+CREATE TABLE IF NOT EXISTS wishlist (
+    wishlist_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_wishlist_user FOREIGN KEY (user_id) REFERENCES users(user_id),
+    CONSTRAINT fk_wishlist_product FOREIGN KEY (product_id) REFERENCES products(product_id),
+    CONSTRAINT uq_wishlist UNIQUE (user_id, product_id)
 );
 
 
