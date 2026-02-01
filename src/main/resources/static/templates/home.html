@@ -9,11 +9,11 @@
         </select>
         <label for="category-select">Category</label>
     </div>
-    <div>
+    <div style="margin-bottom: var(--spacing-lg);">
         <label for="min-price" class="form-label">Minimum Price: $ <span id="min-price-display">0</span></label>
         <input type="range" class="form-range" id="min-price" min="0" max="1500" value="0" onchange="setMinPrice(this)">
     </div>
-    <div>
+    <div style="margin-bottom: var(--spacing-lg);">
         <label for="max-price" class="form-label">Maximum Price: $ <span id="max-price-display">1500</span></label>
         <input type="range" class="form-range" id="max-price" min="0" max="1500" value="1500" onchange="setMaxPrice(this)">
     </div>
@@ -75,8 +75,9 @@
     </div>
 
     <div class="mb-3">
-        <button class="btn btn-secondary" onclick="resetAllFilters()">Reset All Filters</button>
+        <button class="btn btn-secondary w-100" onclick="resetAllFilters()">Reset All Filters</button>
     </div>
 
 </div>
 <div id="content" class="content"></div>
+

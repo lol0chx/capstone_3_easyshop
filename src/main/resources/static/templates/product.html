@@ -1,31 +1,17 @@
-{{#products}}
-<div class="product">
-    <h4 title="{{name}}">{{name}}</h4>
-    <div class="photo">
-           <img src="images/products/{{imageUrl}}" alt="{{name}}"
-               onclick="showImageDetailForm(`{{name}}`,'images/products/{{imageUrl}}')"
-             title="Click to view larger image"
-        >
+{{#products}}<div class="product-card">
+    <div class="product-card-title">{{name}}</div>
+    <div class="product-card-image">
+        <img src="images/products/{{imageUrl}}" alt="{{name}}" onclick="showImageDetailForm(`{{name}}`,'images/products/{{imageUrl}}')" title="Click to view larger image">
     </div>
-    <p>{{description}}</p>
-    <div class="price">${{price}}</div>
-    <div class="add-button" style="display:flex; gap:.5rem;">
-        <button class="btn btn-success" onclick="cartService.addToCart({{productId}})" title="Add this product to your cart">
-            <i class="fas fa-shopping-cart" style="margin-right: 0.5rem;"></i>Add to Cart
-        </button>
-        <button class="btn {{#isWishlisted}}btn-danger{{/isWishlisted}}{{^isWishlisted}}btn-outline-danger{{/isWishlisted}}" onclick="wishlistService.toggle({{productId}})" title="Add to Wishlist">
-            <i class="fas fa-heart" style="margin-right: 0.25rem;"></i>{{#isWishlisted}}Wishlisted{{/isWishlisted}}{{^isWishlisted}}Wishlist{{/isWishlisted}}
-        </button>
+    <div class="product-card-desc">{{description}}</div>
+    <div class="product-card-price">${{price}}</div>
+    <div class="product-card-actions">
+        <button class="btn-cart" onclick="cartService.addToCart({{productId}})"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+        <button class="btn-wishlist {{#isWishlisted}}active{{/isWishlisted}}" onclick="wishlistService.toggle({{productId}})"><i class="fas fa-heart"></i></button>
     </div>
-</div>
-{{/products}}
-
-<div class="pagination" style="display:flex; align-items:center; gap:.75rem; margin-top:1rem;">
-    {{#hasPrev}}
-    <button class="btn btn-outline-secondary" onclick="productService.prevPage()">Previous</button>
-    {{/hasPrev}}
-    <span style="color: var(--text-light);">Page {{page}}</span>
-    {{#hasNext}}
-    <button class="btn btn-outline-secondary" onclick="productService.nextPage()">Next</button>
-    {{/hasNext}}
+</div>{{/products}}
+<div class="pagination">
+    {{#hasPrev}}<button class="btn-page" onclick="productService.prevPage()">Previous</button>{{/hasPrev}}
+    <span>Page {{page}}</span>
+    {{#hasNext}}<button class="btn-page" onclick="productService.nextPage()">Next</button>{{/hasNext}}
 </div>
