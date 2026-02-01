@@ -61,11 +61,17 @@ class ProductService {
     {
         // Show exactly two rows of products based on available width
         try {
+            const main = document.querySelector('main');
             const content = document.getElementById('content');
-            if (!content) return;
-            const width = content.clientWidth || window.innerWidth;
+            if (!content || !main) return;
+            
+            // Get the actual width available for content (accounting for sidebar)
+            const mainWidth = main.clientWidth;
+            const sidebarWidth = 280; // filter-box width
+            const contentWidth = mainWidth - sidebarWidth;
+            
             const minCardW = 280;
-            const cols = Math.max(1, Math.floor(width / minCardW));
+            const cols = Math.max(2, Math.floor(contentWidth / minCardW));
             const computed = cols * 2; // two rows
             // Clamp to a reasonable range
             this.size = Math.min(24, Math.max(4, computed));
