@@ -149,6 +149,11 @@ function showCart()
     cartService.loadCartPage();
 }
 
+function showWishlist()
+{
+    wishlistService.loadWishlistPage();
+}
+
 function clearCart()
 {
     if (confirm('Are you sure you want to clear your entire cart?')) {
