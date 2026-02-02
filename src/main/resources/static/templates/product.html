@@ -1,20 +1,22 @@
 {{#products}}
-<div class="product">
+<div class="product-card">
     <h4 title="{{name}}">{{name}}</h4>
-    <div class="photo">
-           <img src="images/products/{{imageUrl}}" alt="{{name}}"
-               onclick="showImageDetailForm(`{{name}}`,'images/products/{{imageUrl}}')"
+    <div class="product-photo">
+        <img src="images/products/{{imageUrl}}" alt="{{name}}"
+             onclick="showImageDetailForm(`{{name}}`,'images/products/{{imageUrl}}')"
              title="Click to view larger image"
         >
     </div>
-    <p>{{description}}</p>
-    <div class="price">${{price}}</div>
-    <div class="add-button" style="display:flex; gap:.5rem;">
+    <div class="product-details">
+        <p>{{description}}</p>
+        <div class="product-price">${{price}}</div>
+    </div>
+    <div class="product-actions">
         <button class="btn btn-success" onclick="cartService.addToCart({{productId}})" title="Add this product to your cart">
-            <i class="fas fa-shopping-cart" style="margin-right: 0.5rem;"></i>Add to Cart
+            <i class="fas fa-shopping-cart"></i> Add to Cart
         </button>
         <button class="btn {{#isWishlisted}}btn-danger{{/isWishlisted}}{{^isWishlisted}}btn-outline-danger{{/isWishlisted}}" onclick="wishlistService.toggle({{productId}})" title="Add to Wishlist">
-            <i class="fas fa-heart" style="margin-right: 0.25rem;"></i>{{#isWishlisted}}Wishlisted{{/isWishlisted}}{{^isWishlisted}}Wishlist{{/isWishlisted}}
+            <i class="fas fa-heart"></i> {{#isWishlisted}}Wishlisted{{/isWishlisted}}{{^isWishlisted}}Wishlist{{/isWishlisted}}
         </button>
     </div>
 </div>

@@ -64,11 +64,11 @@ class ProductService {
             const content = document.getElementById('content');
             if (!content) return;
             const width = content.clientWidth || window.innerWidth;
-            const minCardW = 280;
+            const minCardW = 250;
             const cols = Math.max(1, Math.floor(width / minCardW));
-            const computed = cols * 2; // two rows
+            const computed = cols * 3; // three rows for better layout
             // Clamp to a reasonable range
-            this.size = Math.min(24, Math.max(4, computed));
+            this.size = Math.min(24, Math.max(6, computed));
         } catch (_) {
             // keep default size
         }
@@ -165,7 +165,7 @@ class ProductService {
 
     enableButtons()
     {
-        const buttons = [...document.querySelectorAll(".add-button")];
+        const buttons = [...document.querySelectorAll(".product-actions")];
 
         if(userService.isLoggedIn())
         {
