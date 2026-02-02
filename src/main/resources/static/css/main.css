@@ -152,9 +152,11 @@ header a:hover {
 main {
     display: flex;
     flex-direction: row;
-    flex: 1;
+    /* Don't force-grow; let content define height */
+    flex: 0 0 auto;
     width: 100%;
-    min-height: calc(100vh - 80px);
+    /* Allow the page to shrink to content height */
+    min-height: auto;
     overflow: visible;
 }
 
@@ -178,7 +180,8 @@ main.no-sidebar #content {
     overflow-y: auto;
     position: sticky;
     top: 80px;
-    height: calc(100vh - 80px);
+    /* Allow sidebar to shrink to content; cap at viewport */
+    max-height: calc(100vh - 80px);
     align-self: flex-start;
 }
 
@@ -233,7 +236,8 @@ main.no-sidebar #content {
     padding: var(--spacing-lg);
     background-color: var(--bg-lighter);
     align-content: start;
-    min-height: calc(100vh - 80px);
+    /* Let content height be driven by items */
+    min-height: auto;
 }
 
 /* ============================================
@@ -1191,7 +1195,8 @@ main.no-sidebar #content {
     
     #content {
         height: auto;
-        min-height: calc(100vh - 400px);
+        /* Avoid forcing extra space on small screens too */
+        min-height: auto;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
 }
