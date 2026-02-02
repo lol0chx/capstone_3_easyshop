@@ -1,13 +1,24 @@
 let adminProducts = {};
 let adminModalOpen = false;
 
+function attachAdminEventListeners() {
+    const addBtn = document.getElementById('add-product-btn');
+    if (addBtn) {
+        addBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Add Product button clicked');
+            showProductForm();
+        });
+    }
+}
+
 function loadAdminProducts()
 {
     const mainEl = document.querySelector('main');
     if (mainEl) mainEl.classList.add('no-sidebar');
 
     // Render shell immediately so user sees navigation change
-    templateBuilder.build('admin-products', { products: [], loading: true, noProducts: false }, 'main');
+    templateBuilder.build('admin-products', { products: [], loading: true, noProducts: false }, 'main', attachAdminEventListeners);
 
     // Then fetch products and re-render with data
     console.log('Loading admin products from', `${config.baseUrl}/products`);
@@ -25,7 +36,7 @@ function loadAdminProducts()
             }));
             const data = { products: normalized, loading: false, noProducts: normalized.length === 0 };
             if (!adminModalOpen) {
-                templateBuilder.build('admin-products', data, 'main');
+                templateBuilder.build('admin-products', data, 'main', attachAdminEventListeners);
             }
         })
         .catch((err) => {
@@ -44,15 +55,20 @@ function loadAdminProducts()
                 main.appendChild(msg);
             }
             if (!adminModalOpen) {
-                templateBuilder.build('admin-products', { products: [], loading: false, noProducts: true }, 'main');
+                templateBuilder.build('admin-products', { products: [], loading: false, noProducts: true }, 'main', attachAdminEventListeners);
             }
         });
 }
 
 function showProductForm(product)
 {
+    const modalEl = document.getElementById('admin-modal');
+    if (!modalEl) {
+        console.error('admin-modal div not found!');
+        return;
+    }
+    
     adminModalOpen = true;
-    // Flatten product fields for Mustache 0.1 (no dotted paths)
     const p = product || {};
     const formModel = {
         productId: p.productId || 0,
@@ -67,28 +83,93 @@ function showProductForm(product)
         isNew: !p.productId
     };
 
-    // Render modal immediately with empty categories; will update after fetch
-    templateBuilder.build('admin-product-form', { ...formModel, categories: [] }, 'admin-modal');
-
-    const categoriesUrl = `${config.baseUrl}/categories`;
-    axios.get(categoriesUrl, { timeout: 8000 })
+    // Directly inject modal HTML instead of using template builder
+    const modalHtml = `
+    <div class="modal" onclick="hideAdminModal()">
+      <div class="modal-dialog" role="document" onclick="event.stopPropagation()">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>Add New Product</h3>
+            <button type="button" class="btn-close" onclick="hideAdminModal()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div id="admin-form-errors"></div>
+            <form id="productForm" onsubmit="submitProductForm(event)">
+              <input type="hidden" id="productId" value="0" />
+              
+              <div class="form-group">
+                <label for="name">Product Name *</label>
+                <input type="text" id="name" class="form-control" value="" required placeholder="Enter product name" />
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="price">Price *</label>
+                  <input type="number" id="price" class="form-control" step="0.01" min="0" value="0" required placeholder="0.00" />
+                </div>
+                <div class="form-group">
+                  <label for="stock">Stock</label>
+                  <input type="number" id="stock" class="form-control" min="0" value="0" placeholder="0" />
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="categoryId">Category *</label>
+                  <select id="categoryId" class="form-control" required>
+                    <option value="">Loading categories...</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="subCategory">Subcategory</label>
+                  <input type="text" id="subCategory" class="form-control" value="" placeholder="e.g., Red, Blue, Large" />
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="imageUrl">Image URL</label>
+                <input type="text" id="imageUrl" class="form-control" value="" placeholder="product-image.jpg" />
+              </div>
+              
+              <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" class="form-control" rows="3" placeholder="Enter product description"></textarea>
+              </div>
+              
+              <div class="form-group form-check">
+                <input type="checkbox" id="isFeatured" class="form-check-input" />
+                <label for="isFeatured" class="form-check-label">Featured Product</label>
+              </div>
+              
+              <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="hideAdminModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Product</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>`;
+    
+    modalEl.innerHTML = modalHtml;
+    
+    // Load categories into dropdown
+    axios.get(config.baseUrl + '/categories', { timeout: 8000 })
         .then(resp => {
-            const categories = Array.isArray(resp.data) ? resp.data.map(c => ({
-                categoryId: c.categoryId,
-                name: c.name,
-                isSelected: product && product.categoryId === c.categoryId
-            })) : [];
-            templateBuilder.build('admin-product-form', { ...formModel, categories }, 'admin-modal');
+            const select = document.getElementById('categoryId');
+            if (select && Array.isArray(resp.data)) {
+                select.innerHTML = resp.data.map(c => 
+                    '<option value="' + c.categoryId + '">' + c.name + '</option>'
+                ).join('');
+            }
         })
-        .catch((err) => {
-            const status = err && err.response ? err.response.status : 'N/A';
-            templateBuilder.append('error', { error: `Failed to load categories (status ${status}).` }, 'errors');
-        });
+        .catch(err => console.error('Failed to load categories:', err));
 }
 
 function hideAdminModal()
 {
-    templateBuilder.clear('admin-modal');
+    const modalEl = document.getElementById('admin-modal');
+    if (modalEl) modalEl.innerHTML = '';
     adminModalOpen = false;
 }
 
@@ -130,15 +211,16 @@ function submitProductForm(event)
 {
     event.preventDefault();
     const productId = parseInt(document.getElementById('productId').value || '0', 10);
+    const categoryVal = parseInt(document.getElementById('categoryId').value, 10);
     const product = {
         name: document.getElementById('name').value,
         price: parseFloat(document.getElementById('price').value),
-        categoryId: parseInt(document.getElementById('categoryId').value, 10),
-        subCategory: document.getElementById('subCategory').value,
+        categoryId: isNaN(categoryVal) ? 1 : categoryVal,
+        subCategory: document.getElementById('subCategory').value || '',
         stock: parseInt(document.getElementById('stock').value || '0', 10),
-        featured: document.getElementById('isFeatured').checked,
-        imageUrl: document.getElementById('imageUrl').value,
-        description: document.getElementById('description').value
+        isFeatured: document.getElementById('isFeatured').checked,
+        imageUrl: document.getElementById('imageUrl').value || '',
+        description: document.getElementById('description').value || ''
     };
 
     const isUpdate = productId && productId > 0;
