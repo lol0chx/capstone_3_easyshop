@@ -80,7 +80,7 @@ function showProductForm(product)
         isFeatured: (p.isFeatured !== undefined ? p.isFeatured : (p.featured !== undefined ? p.featured : false)),
         imageUrl: p.imageUrl || '',
         description: p.description || '',
-        isNew: !p.productId
+      isNew: !(p && p.productId && p.productId > 0)
     };
 
     // Directly inject modal HTML instead of using template builder
@@ -89,27 +89,27 @@ function showProductForm(product)
       <div class="modal-dialog" role="document" onclick="event.stopPropagation()">
         <div class="modal-content">
           <div class="modal-header">
-            <h3>Add New Product</h3>
+            <h3>${formModel.isNew ? 'Add New Product' : 'Edit Product'}</h3>
             <button type="button" class="btn-close" onclick="hideAdminModal()">&times;</button>
           </div>
           <div class="modal-body">
             <div id="admin-form-errors"></div>
             <form id="productForm" onsubmit="submitProductForm(event)">
-              <input type="hidden" id="productId" value="0" />
+              <input type="hidden" id="productId" value="${formModel.productId}" />
               
               <div class="form-group">
                 <label for="name">Product Name *</label>
-                <input type="text" id="name" class="form-control" value="" required placeholder="Enter product name" />
+                <input type="text" id="name" class="form-control" value="${formModel.name}" required placeholder="Enter product name" />
               </div>
               
               <div class="form-row">
                 <div class="form-group">
                   <label for="price">Price *</label>
-                  <input type="number" id="price" class="form-control" step="0.01" min="0" value="0" required placeholder="0.00" />
+                  <input type="number" id="price" class="form-control" step="0.01" min="0" value="${formModel.price}" required placeholder="0.00" />
                 </div>
                 <div class="form-group">
                   <label for="stock">Stock</label>
-                  <input type="number" id="stock" class="form-control" min="0" value="0" placeholder="0" />
+                  <input type="number" id="stock" class="form-control" min="0" value="${formModel.stock}" placeholder="0" />
                 </div>
               </div>
               
@@ -122,28 +122,28 @@ function showProductForm(product)
                 </div>
                 <div class="form-group">
                   <label for="subCategory">Subcategory</label>
-                  <input type="text" id="subCategory" class="form-control" value="" placeholder="e.g., Red, Blue, Large" />
+                  <input type="text" id="subCategory" class="form-control" value="${formModel.subCategory}" placeholder="e.g., Red, Blue, Large" />
                 </div>
               </div>
               
               <div class="form-group">
                 <label for="imageUrl">Image URL</label>
-                <input type="text" id="imageUrl" class="form-control" value="" placeholder="product-image.jpg" />
+                <input type="text" id="imageUrl" class="form-control" value="${formModel.imageUrl}" placeholder="product-image.jpg" />
               </div>
               
               <div class="form-group">
                 <label for="description">Description</label>
-                <textarea id="description" class="form-control" rows="3" placeholder="Enter product description"></textarea>
+                <textarea id="description" class="form-control" rows="3" placeholder="Enter product description">${formModel.description}</textarea>
               </div>
               
               <div class="form-group form-check">
-                <input type="checkbox" id="isFeatured" class="form-check-input" />
+                <input type="checkbox" id="isFeatured" class="form-check-input" ${formModel.isFeatured ? 'checked' : ''} />
                 <label for="isFeatured" class="form-check-label">Featured Product</label>
               </div>
               
               <div class="form-actions">
                 <button type="button" class="btn btn-secondary" onclick="hideAdminModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Product</button>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> ${formModel.isNew ? 'Add Product' : 'Save Changes'}</button>
               </div>
             </form>
           </div>
@@ -158,9 +158,16 @@ function showProductForm(product)
         .then(resp => {
             const select = document.getElementById('categoryId');
             if (select && Array.isArray(resp.data)) {
-                select.innerHTML = resp.data.map(c => 
-                    '<option value="' + c.categoryId + '">' + c.name + '</option>'
-                ).join('');
+          select.innerHTML = resp.data.map(c => {
+            const id = (c.categoryId !== undefined ? c.categoryId : c.id);
+            const selected = id === formModel.categoryId ? ' selected' : '';
+            return '<option value="' + id + '"' + selected + '>' + c.name + '</option>';
+          }).join('');
+          // If no match, ensure a valid default
+          if (!select.value || select.value === '') {
+            const first = select.querySelector('option');
+            if (first) first.selected = true;
+          }
             }
         })
         .catch(err => console.error('Failed to load categories:', err));
