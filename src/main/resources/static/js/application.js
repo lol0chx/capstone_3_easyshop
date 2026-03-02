@@ -69,79 +69,19 @@ function saveProfile()
 {
     const firstName = document.getElementById("firstName").value;
     const lastName = document.getElementById("lastName").value;
-    const company = document.getElementById("company") ? document.getElementById("company").value : "";
-    const dob = document.getElementById("dob") ? document.getElementById("dob").value : "";
-    const gender = document.getElementById("gender") ? document.getElementById("gender").value : "";
     const phone = document.getElementById("phone").value;
-    const secondaryPhone = document.getElementById("secondaryPhone") ? document.getElementById("secondaryPhone").value : "";
     const email = document.getElementById("email").value;
-    const preferredContact = document.getElementById("preferredContact") ? document.getElementById("preferredContact").value : "email";
-    const newsletter = document.getElementById("newsletter") ? document.getElementById("newsletter").checked : false;
     const address = document.getElementById("address").value;
-    const address2 = document.getElementById("address2") ? document.getElementById("address2").value : "";
     const city = document.getElementById("city").value;
     const state = document.getElementById("state").value;
     const zip = document.getElementById("zip").value;
-    const country = document.getElementById("country") ? document.getElementById("country").value : "";
-    const bio = document.getElementById("bio") ? document.getElementById("bio").value : "";
-    const avatarInput = document.getElementById("avatar");
-    let avatarDataUrl = "";
-    // capture current preview if exists
-    const previewEl = document.getElementById("avatarPreview");
-    if (previewEl && previewEl.src && previewEl.style.display !== "none") {
-        avatarDataUrl = previewEl.src;
-    }
-    const language = document.getElementById("language") ? document.getElementById("language").value : "en";
-    const timezone = document.getElementById("timezone") ? document.getElementById("timezone").value : "UTC";
-    const showEmail = document.getElementById("showEmail") ? document.getElementById("showEmail").checked : false;
-    const website = document.getElementById("website") ? document.getElementById("website").value : "";
-    const twitter = document.getElementById("twitter") ? document.getElementById("twitter").value : "";
-    const instagram = document.getElementById("instagram") ? document.getElementById("instagram").value : "";
-    const deliveryInstructions = document.getElementById("deliveryInstructions") ? document.getElementById("deliveryInstructions").value : "";
 
     if (!firstName || !lastName || !email) {
         alert('Please fill in required fields (First Name, Last Name, Email)');
         return;
     }
 
-    const profile = {
-        firstName,
-        lastName,
-        company,
-        dob,
-        phone,
-        secondaryPhone,
-        email,
-        preferredContact,
-        newsletter,
-        address,
-        address2,
-        city,
-        state,
-        zip,
-        country
-    };
-
-    const extras = {
-        company,
-        dob,
-        gender,
-        secondaryPhone,
-        preferredContact,
-        newsletter,
-        address2,
-        country,
-        bio,
-        avatarDataUrl,
-        language,
-        timezone,
-        showEmail,
-        website,
-        twitter,
-        instagram,
-        deliveryInstructions
-    };
-    profileService.updateProfile(profile, extras);
+    profileService.updateProfile({ firstName, lastName, phone, email, address, city, state, zip });
 }
 
 function showCart()

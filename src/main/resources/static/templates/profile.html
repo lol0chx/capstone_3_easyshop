@@ -1,182 +1,124 @@
 
 <div class="filter-box"></div>
-<div id="content" class="content-form">
-  <div>
-    <h1><i class="fas fa-user-circle" style="margin-right: 1rem; color: var(--primary-color);"></i>My Profile</h1>
-    <p style="color: var(--text-light); font-size: var(--font-size-sm);">Update your personal information and address</p>
-  </div>
+<div id="content" class="profile-page">
 
-  <!-- Summary Card -->
-  <div class="profile-summary" style="display:flex; align-items:center; gap: var(--spacing-lg); background: var(--bg-light); padding: var(--spacing-lg); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
-    <div style="width:64px; height:64px; border-radius:50%; background: var(--primary-light); color: white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size: var(--font-size-lg); overflow:hidden;">
-      <img id="avatarPreview" src="" alt="Avatar" style="width:100%; height:100%; object-fit: cover; display:none;" />
-      <span id="avatarInitials">U</span>
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div class="profile-avatar-section">
+      <div class="profile-avatar">
+        <img id="avatarPreview" src="" alt="Avatar" style="display:none;" />
+        <span id="avatarInitials">U</span>
+      </div>
+      <div class="profile-user-info">
+        <h1>{{firstName}} {{lastName}}</h1>
+        <p class="profile-email">{{email}}</p>
+        <span class="profile-badge"><i class="fas fa-check-circle"></i> Verified Account</span>
+      </div>
     </div>
-    <div>
-      <div style="font-weight:600;">{{firstName}} {{lastName}}</div>
-      <div style="color: var(--text-light); font-size: var(--font-size-sm);">{{email}}</div>
-    </div>
-  </div>
-
-  <!-- Profile Completion -->
-  <div style="background: var(--bg-light); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: var(--spacing-lg);">
-    <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: var(--spacing-md);">
-      <span style="font-weight:600;">Profile completeness</span>
-      <span id="profileProgressText" style="color: var(--text-light);"></span>
-    </div>
-    <div style="height:10px; background: var(--border-color); border-radius: var(--radius-md); overflow:hidden;">
-      <div id="profileProgress" style="height:100%; width:0; background: var(--primary-color);"></div>
+    <div class="profile-header-actions">
+      <button class="btn btn-primary" onclick="saveProfile()">
+        <i class="fas fa-save"></i> Save Changes
+      </button>
+      <button class="btn btn-outline-secondary" onclick="loadHome()">
+        <i class="fas fa-arrow-left"></i> Back to Store
+      </button>
     </div>
   </div>
 
-  <!-- Account Info -->
-  <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg);">
-    <div class="form-floating mb-3">
-      <input type="text" class="form-control" id="username" placeholder="Username" value='{{username}}' disabled>
-      <label for="username"><i class="fas fa-id-badge" style="margin-right: 0.5rem;"></i>Username</label>
+  <!-- Profile Completion Bar -->
+  <div class="profile-completion">
+    <div class="profile-completion-header">
+      <span>Profile Completion</span>
+      <span id="profileProgressText" class="profile-completion-pct"></span>
+    </div>
+    <div class="profile-progress-track">
+      <div id="profileProgress" class="profile-progress-fill"></div>
     </div>
   </div>
 
-  <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg);">
-    <div class="form-floating mb-3">
-      <input type="text" class="form-control" id="firstName" placeholder="First Name" value='{{firstName}}'>
-      <label for="firstName"><i class="fas fa-user" style="margin-right: 0.5rem;"></i>First Name</label>
+  <!-- Two-column layout for cards -->
+  <div class="profile-grid">
+
+    <!-- Personal Information Card -->
+    <div class="profile-card">
+      <div class="profile-card-header">
+        <i class="fas fa-user"></i>
+        <h2>Personal Information</h2>
+      </div>
+      <div class="profile-card-body">
+        <div class="profile-field">
+          <label for="username">Username</label>
+          <input type="text" class="form-control" id="username" value='{{username}}' disabled>
+        </div>
+        <div class="profile-field-row">
+          <div class="profile-field">
+            <label for="firstName">First Name <span class="required">*</span></label>
+            <input type="text" class="form-control" id="firstName" value='{{firstName}}' placeholder="Enter first name">
+          </div>
+          <div class="profile-field">
+            <label for="lastName">Last Name <span class="required">*</span></label>
+            <input type="text" class="form-control" id="lastName" value='{{lastName}}' placeholder="Enter last name">
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="form-floating mb-3">
-      <input type="text" class="form-control" id="lastName" placeholder="Last Name" value='{{lastName}}'>
-      <label for="lastName"><i class="fas fa-user" style="margin-right: 0.5rem;"></i>Last Name</label>
+
+    <!-- Contact Information Card -->
+    <div class="profile-card">
+      <div class="profile-card-header">
+        <i class="fas fa-address-book"></i>
+        <h2>Contact Information</h2>
+      </div>
+      <div class="profile-card-body">
+        <div class="profile-field">
+          <label for="email">Email Address <span class="required">*</span></label>
+          <input type="email" class="form-control" id="email" value='{{email}}' placeholder="Enter email address">
+        </div>
+        <div class="profile-field">
+          <label for="phone">Phone Number</label>
+          <input type="tel" class="form-control" id="phone" value='{{phone}}' placeholder="Enter phone number">
+        </div>
+      </div>
     </div>
-    <div class="form-floating mb-3">
-      <input type="text" class="form-control" id="company" placeholder="Company" value='{{company}}'>
-      <label for="company"><i class="fas fa-building" style="margin-right: 0.5rem;"></i>Company (optional)</label>
+
+    <!-- Shipping Address Card (full width) -->
+    <div class="profile-card profile-card-full">
+      <div class="profile-card-header">
+        <i class="fas fa-map-marker-alt"></i>
+        <h2>Shipping Address</h2>
+      </div>
+      <div class="profile-card-body">
+        <div class="profile-field">
+          <label for="address">Street Address</label>
+          <input type="text" class="form-control" id="address" value='{{address}}' placeholder="Enter street address">
+        </div>
+        <div class="profile-field-row profile-field-row-3">
+          <div class="profile-field">
+            <label for="city">City</label>
+            <input type="text" class="form-control" id="city" value='{{city}}' placeholder="Enter city">
+          </div>
+          <div class="profile-field">
+            <label for="state">State</label>
+            <input type="text" class="form-control" id="state" value='{{state}}' placeholder="Enter state">
+          </div>
+          <div class="profile-field">
+            <label for="zip">ZIP Code</label>
+            <input type="text" class="form-control" id="zip" value='{{zip}}' placeholder="Enter ZIP code">
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="form-floating mb-3">
-      <input type="date" class="form-control" id="dob" placeholder="Date of Birth" value='{{dob}}'>
-      <label for="dob"><i class="fas fa-calendar" style="margin-right: 0.5rem;"></i>Date of Birth</label>
-    </div>
-    <div class="form-floating mb-3">
-      <select class="form-select" id="gender">
-        <option value="" {{#genderUnknown}}selected{{/genderUnknown}}>Prefer not to say</option>
-        <option value="male" {{#genderMale}}selected{{/genderMale}}>Male</option>
-        <option value="female" {{#genderFemale}}selected{{/genderFemale}}>Female</option>
-        <option value="other" {{#genderOther}}selected{{/genderOther}}>Other</option>
-      </select>
-      <label for="gender"><i class="fas fa-venus-mars" style="margin-right: 0.5rem;"></i>Gender</label>
-    </div>
+
   </div>
 
-  <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg);">
-    <div class="form-floating mb-3">
-      <input type="tel" class="form-control" id="phone" placeholder="Phone" value='{{phone}}'>
-      <label for="phone"><i class="fas fa-phone" style="margin-right: 0.5rem;"></i>Phone</label>
-    </div>
-    <div class="form-floating mb-3">
-      <input type="tel" class="form-control" id="secondaryPhone" placeholder="Secondary Phone" value='{{secondaryPhone}}'>
-      <label for="secondaryPhone"><i class="fas fa-phone" style="margin-right: 0.5rem;"></i>Secondary Phone (optional)</label>
-    </div>
-    <div class="form-floating mb-3">
-      <input type="email" class="form-control" id="email" placeholder="Email" value='{{email}}'>
-      <label for="email"><i class="fas fa-envelope" style="margin-right: 0.5rem;"></i>Email</label>
-    </div>
-    <div class="form-floating mb-3">
-      <select class="form-select" id="preferredContact">
-        <option value="email" {{#preferredContactEmail}}selected{{/preferredContactEmail}}>Email</option>
-        <option value="phone" {{#preferredContactPhone}}selected{{/preferredContactPhone}}>Phone</option>
-        <option value="sms" {{#preferredContactSms}}selected{{/preferredContactSms}}>SMS</option>
-      </select>
-      <label for="preferredContact"><i class="fas fa-address-card" style="margin-right: 0.5rem;"></i>Preferred Contact Method</label>
-    </div>
-    <div class="form-check mb-3" style="padding-left: 1.25rem;">
-      <input class="form-check-input" type="checkbox" id="newsletter" {{#newsletter}}checked{{/newsletter}}>
-      <label class="form-check-label" for="newsletter"><i class="fas fa-newspaper" style="margin-right: 0.5rem;"></i>Subscribe to newsletter</label>
-    </div>
-  </div>
-
-  <div class="form-floating mb-3">
-    <input type="text" class="form-control" id="address" placeholder="Street Address" value='{{address}}'>
-    <label for="address"><i class="fas fa-map-marker-alt" style="margin-right: 0.5rem;"></i>Street Address</label>
-  </div>
-
-  <div class="form-floating mb-3">
-    <input type="text" class="form-control" id="address2" placeholder="Apartment, suite, etc." value='{{address2}}'>
-    <label for="address2"><i class="fas fa-door-open" style="margin-right: 0.5rem;"></i>Apartment / Suite (optional)</label>
-  </div>
-
-  <div style="display: grid; grid-template-columns: 1fr; gap: var(--spacing-lg);">
-    <div class="form-floating mb-3">
-      <input type="text" class="form-control" id="city" placeholder="City" value='{{city}}'>
-      <label for="city"><i class="fas fa-city" style="margin-right: 0.5rem;"></i>City</label>
-    </div>
-    <div class="form-floating mb-3">
-      <input type="text" class="form-control" id="state" placeholder="State" value='{{state}}'>
-      <label for="state"><i class="fas fa-flag" style="margin-right: 0.5rem;"></i>State</label>
-    </div>
-    <div class="form-floating mb-3">
-      <input type="text" class="form-control" id="zip" placeholder="ZIP Code" value='{{zip}}'>
-      <label for="zip"><i class="fas fa-location-dot" style="margin-right: 0.5rem;"></i>ZIP</label>
-    </div>
-    <div class="form-floating mb-3">
-      <input type="text" class="form-control" id="country" placeholder="Country" value='{{country}}'>
-      <label for="country"><i class="fas fa-globe" style="margin-right: 0.5rem;"></i>Country</label>
-    </div>
-    <div class="mb-3">
-      <label for="bio" class="form-label"><i class="fas fa-comment" style="margin-right: 0.5rem;"></i>Bio</label>
-      <textarea id="bio" class="form-control" rows="3" placeholder="Tell us about yourself...">{{bio}}</textarea>
-    </div>
-    <div class="mb-3">
-      <label for="avatar" class="form-label"><i class="fas fa-image" style="margin-right: 0.5rem;"></i>Profile Photo</label>
-      <input type="file" id="avatar" class="form-control" accept="image/*">
-    </div>
-    
-    <!-- Preferences -->
-    <div class="form-floating mb-3">
-      <select class="form-select" id="language">
-        <option value="en" {{#languageEn}}selected{{/languageEn}}>English</option>
-        <option value="es" {{#languageEs}}selected{{/languageEs}}>Spanish</option>
-        <option value="fr" {{#languageFr}}selected{{/languageFr}}>French</option>
-      </select>
-      <label for="language"><i class="fas fa-language" style="margin-right: 0.5rem;"></i>Preferred Language</label>
-    </div>
-    <div class="form-floating mb-3">
-      <select class="form-select" id="timezone">
-        <option value="UTC" {{#timezoneUTC}}selected{{/timezoneUTC}}>UTC</option>
-        <option value="EST" {{#timezoneEST}}selected{{/timezoneEST}}>Eastern (EST)</option>
-        <option value="PST" {{#timezonePST}}selected{{/timezonePST}}>Pacific (PST)</option>
-      </select>
-      <label for="timezone"><i class="fas fa-clock" style="margin-right: 0.5rem;"></i>Timezone</label>
-    </div>
-    <div class="form-check mb-3" style="padding-left: 1.25rem;">
-      <input class="form-check-input" type="checkbox" id="showEmail" {{#showEmail}}checked{{/showEmail}}>
-      <label class="form-check-label" for="showEmail"><i class="fas fa-eye" style="margin-right: 0.5rem;"></i>Show my email on profile</label>
-    </div>
-
-    <!-- Social -->
-    <div class="form-floating mb-3">
-      <input type="url" class="form-control" id="website" placeholder="Website" value='{{website}}'>
-      <label for="website"><i class="fas fa-link" style="margin-right: 0.5rem;"></i>Website</label>
-    </div>
-    <div class="form-floating mb-3">
-      <input type="text" class="form-control" id="twitter" placeholder="Twitter handle" value='{{twitter}}'>
-      <label for="twitter"><i class="fab fa-twitter" style="margin-right: 0.5rem;"></i>Twitter</label>
-    </div>
-    <div class="form-floating mb-3">
-      <input type="text" class="form-control" id="instagram" placeholder="Instagram handle" value='{{instagram}}'>
-      <label for="instagram"><i class="fab fa-instagram" style="margin-right: 0.5rem;"></i>Instagram</label>
-    </div>
-
-    <!-- Delivery Preferences -->
-    <div class="mb-3">
-      <label for="deliveryInstructions" class="form-label"><i class="fas fa-truck" style="margin-right: 0.5rem;"></i>Delivery Instructions</label>
-      <textarea id="deliveryInstructions" class="form-control" rows="2" placeholder="e.g., Leave at front desk">{{deliveryInstructions}}</textarea>
-    </div>
-  </div>
-
-  <div style="display: flex; gap: var(--spacing-lg); margin-top: var(--spacing-xl);">
-    <button class="btn btn-primary btn-sm" onclick="saveProfile()">
-      <i class="fas fa-save" style="margin-right: 0.5rem;"></i>Save Changes
+  <!-- Bottom Save -->
+  <div class="profile-bottom-actions">
+    <button class="btn btn-primary" onclick="saveProfile()">
+      <i class="fas fa-save"></i> Save Changes
     </button>
-    <button class="btn btn-secondary btn-sm" onclick="loadHome()">
-      <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i>Back to Store
+    <button class="btn btn-outline-secondary" onclick="loadHome()">
+      <i class="fas fa-arrow-left"></i> Back to Store
     </button>
   </div>
+
 </div>
