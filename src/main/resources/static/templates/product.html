@@ -1,8 +1,8 @@
 {{#products}}<div class="product-card">
-    <div class="product-card-title">{{name}}</div>
     <div class="product-card-image">
         <img src="images/products/{{imageUrl}}" alt="{{name}}" onclick="showImageDetailForm(`{{name}}`,'images/products/{{imageUrl}}')" title="Click to view larger image">
     </div>
+    <div class="product-card-title">{{name}}</div>
     <div class="product-card-desc">{{description}}</div>
     <div class="product-card-price">${{price}}</div>
     <div class="product-card-actions">
@@ -11,7 +11,7 @@
     </div>
 </div>{{/products}}
 <div class="pagination">
-    {{#hasPrev}}<button class="btn-page" onclick="productService.prevPage()">Previous</button>{{/hasPrev}}
+    {{#hasPrev}}<button class="btn-page" onclick="productService.prevPage()">&#8592; Prev</button>{{/hasPrev}}
     <span>Page {{page}}</span>
-    {{#hasNext}}<button class="btn-page" onclick="productService.nextPage()">Next</button>{{/hasNext}}
+    {{#hasNext}}<button class="btn-page" onclick="productService.nextPage()">Next &#8594;</button>{{/hasNext}}
 </div>
