@@ -54,27 +54,27 @@ class ProductService {
     }
 
     page = 1;
-    size = 12;
+    size = 18;
     total = 0;
 
     computePageSize()
     {
-        // Show exactly two rows of products based on available width
         try {
             const main = document.querySelector('main');
-            const content = document.getElementById('content');
-            if (!content || !main) return;
-            
-            // Get the actual width available for content (accounting for sidebar)
-            const mainWidth = main.clientWidth;
-            const sidebarWidth = 280; // filter-box width
-            const contentWidth = mainWidth - sidebarWidth;
-            
-            const minCardW = 280;
-            const cols = Math.max(2, Math.floor(contentWidth / minCardW));
-            const computed = cols * 2; // two rows
-            // Clamp to a reasonable range
-            this.size = Math.min(24, Math.max(4, computed));
+            if (!main) return;
+
+            // Content width = full main area minus sidebar (270px) and its 2rem padding each side
+            const contentWidth = main.clientWidth - 270 - 64;
+
+            // CSS grid uses minmax(220px, 1fr) — match that min width
+            const cols = Math.max(1, Math.floor(contentWidth / 220));
+
+            // Fill rows to cover the visible viewport
+            // Card height: image(195) + title(35) + desc(54) + price(36) + actions(60) = ~380px, gap=24px
+            const availableH = window.innerHeight - 80 - 64; // minus header + content padding
+            const rows = Math.max(2, Math.ceil(availableH / (380 + 24)));
+
+            this.size = Math.min(60, Math.max(6, cols * rows));
         } catch (_) {
             // keep default size
         }
