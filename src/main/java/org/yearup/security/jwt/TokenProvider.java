@@ -95,8 +95,8 @@ public class TokenProvider implements InitializingBean
         }
         catch (Exception e)
         {
-            logger.info("Token Invalid.");
-            logger.trace("Token Invalid trace: {}.", e.toString());
+            logger.debug("Invalid JWT: {}", e.getClass().getSimpleName());
+            logger.trace("Invalid JWT details: {}", e.toString());
         }
         return false;
     }

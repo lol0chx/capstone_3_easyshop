@@ -68,6 +68,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
+                .authorizeRequests()
+                // Static assets and HTML templates
+                .antMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**", "/templates/**").permitAll()
+                // Public API endpoints for browsing
+                .antMatchers(HttpMethod.GET, "/products/**", "/categories/**").permitAll()
+                // Auth endpoints
+                .antMatchers("/login", "/register").permitAll()
+                // Everything else requires authentication
+                .anyRequest().authenticated()
+
+                .and()
                 .apply(securityConfigurerAdapter());
     }
 
