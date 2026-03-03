@@ -1,8 +1,11 @@
 {{#loggedin}}
 <div id="links">
     <img src="images/logo.svg" alt="EasyShop logo" title="Go to home page" onclick="loadHome()" style="cursor: pointer; margin-left: auto; margin-right: 2rem; display: block;">
-    <a href="#" onclick="loadHome(); return false;" title="Browse all products">
+    <a href="#" onclick="loadHome(); return false;" title="Go to home page">
         <i class="fas fa-home" style="margin-right: 0.5rem;"></i>Home
+    </a>
+    <a href="#" onclick="loadShop(); return false;" title="Browse all products">
+        <i class="fas fa-store" style="margin-right: 0.5rem;"></i>Shop
     </a>
     <a href="#" onclick="editProfile(); return false;" title="Edit your profile">
         <i class="fas fa-user-circle" style="margin-right: 0.5rem;"></i>Profile
@@ -33,8 +36,11 @@
 {{#loggedout}}
 <div id="links">
     <img src="images/logo.svg" alt="EasyShop logo" title="Go to home page" onclick="loadHome()" style="cursor: pointer; margin-left: auto; margin-right: 2rem; display: block;">
-    <a href="#" onclick="loadHome(); return false;" title="Browse all products">
+    <a href="#" onclick="loadHome(); return false;" title="Go to home page">
         <i class="fas fa-home" style="margin-right: 0.5rem;"></i>Home
+    </a>
+    <a href="#" onclick="loadShop(); return false;" title="Browse all products">
+        <i class="fas fa-store" style="margin-right: 0.5rem;"></i>Shop
     </a>
 </div>
 

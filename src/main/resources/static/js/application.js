@@ -45,16 +45,81 @@ function showImageDetailForm(product, imageUrl)
     templateBuilder.build('image-detail',imageDetail,'login')
 }
 
+const CATEGORY_ICONS = [
+    { match: /electronic|tech|gadget|computer|phone|laptop/i, icon: 'fa-laptop',   color: '#2563eb', bg: '#eff6ff' },
+    { match: /cloth|fashion|apparel|shirt|wear|style/i,       icon: 'fa-tshirt',   color: '#10b981', bg: '#ecfdf5' },
+    { match: /sport|outdoor|fitness|gym|exercise/i,           icon: 'fa-running',  color: '#f59e0b', bg: '#fffbeb' },
+    { match: /home|kitchen|living|office|furniture|decor/i,   icon: 'fa-home',     color: '#ef4444', bg: '#fef2f2' },
+    { match: /book|education|learn|school/i,                  icon: 'fa-book',     color: '#8b5cf6', bg: '#f5f3ff' },
+    { match: /toy|game|kids|children|baby/i,                  icon: 'fa-gamepad',  color: '#ec4899', bg: '#fdf2f8' },
+];
+const FALLBACK_ICONS = [
+    { icon: 'fa-box-open', color: '#2563eb', bg: '#eff6ff' },
+    { icon: 'fa-tag',      color: '#10b981', bg: '#ecfdf5' },
+    { icon: 'fa-star',     color: '#f59e0b', bg: '#fffbeb' },
+    { icon: 'fa-gift',     color: '#ef4444', bg: '#fef2f2' },
+    { icon: 'fa-cube',     color: '#8b5cf6', bg: '#f5f3ff' },
+    { icon: 'fa-th-large', color: '#0d9488', bg: '#f0fdfa' },
+];
+
 function loadHome()
 {
-    templateBuilder.build('home',{},'main');
+    const mainEl = document.querySelector('main');
+    if (mainEl) mainEl.classList.add('no-sidebar');
+
+    const catPromise  = axios.get(`${config.baseUrl}/categories`).then(r => r.data).catch(() => []);
+    const prodPromise = axios.get(`${config.baseUrl}/products?page=1&size=8`).then(r => r.data).catch(() => []);
+
+    Promise.all([catPromise, prodPromise]).then(([categories, products]) => {
+        const cats = (categories || []).map((cat, i) => {
+            const match    = CATEGORY_ICONS.find(ci => ci.match.test(cat.name));
+            const fallback = FALLBACK_ICONS[i % FALLBACK_ICONS.length];
+            return {
+                categoryId:  cat.categoryId,
+                name:        cat.name,
+                description: cat.description || '',
+                icon:        match ? match.icon  : fallback.icon,
+                iconColor:   match ? match.color : fallback.color,
+                bgColor:     match ? match.bg    : fallback.bg,
+            };
+        });
+
+        const prods = (products || []).map(p => ({
+            productId:      p.productId,
+            name:           p.name,
+            description:    p.description || '',
+            imageUrl:       (productService && productService.hasPhoto(p.imageUrl)) ? p.imageUrl : 'no-image.jpg',
+            formattedPrice: p.price != null ? `$${parseFloat(p.price).toFixed(2)}` : '',
+        }));
+
+        templateBuilder.build('landing', { categories: cats, featuredProducts: prods }, 'main');
+    });
+}
+
+function loadShop(catId)
+{
+    templateBuilder.build('home', {}, 'main');
     const mainEl = document.querySelector('main');
     if (mainEl) mainEl.classList.remove('no-sidebar');
-    
+
+    productService.clearCategoryFilter();
+    productService.clearMinPriceFilter();
+    productService.clearMaxPriceFilter();
+    productService.clearSubcategoryFilter();
+    productService.page = 1;
+
+    if (catId) productService.addCategoryFilter(catId);
+
     setTimeout(() => {
         if (productService && productService.computePageSize) { productService.computePageSize(); }
         productService.search();
-        categoryService.getAllCategories(loadCategories);
+        categoryService.getAllCategories(categories => {
+            loadCategories(categories);
+            if (catId) {
+                const select = document.getElementById('category-select');
+                if (select) select.value = catId;
+            }
+        });
     }, 100);
 }
 
